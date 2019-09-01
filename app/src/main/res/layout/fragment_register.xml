@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/register_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context=".Fragments.RegisterFragment">
+
+    <RelativeLayout
+        android:id="@+id/reg_add_profile_pic"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/reg_UserImage"
+            android:layout_width="wrap_content"
+            android:layout_height="125dp"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/person"
+            app:civ_border_color="@color/CherryBlossomPink"
+            app:civ_border_width="4dp"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/reg_profile_plus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/add_profile_pic" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/reg_username_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/background_edit_text"
+        android:hint="@string/username"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/reg_fullname_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/background_edit_text"
+        android:hint="@string/full_name"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/reg_email_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/background_edit_text"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/reg_password_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/background_edit_text"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/reg_register_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/background_btn"
+        android:text="@string/register"
+        android:textColor="@color/colorDarkPink" />
+
+    <TextView
+        android:id="@+id/reg_to_login_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/already_have_an_account_log_in" />
+
+</LinearLayout>

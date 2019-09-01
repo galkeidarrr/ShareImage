@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context=".Fragments.LoginFragment">
+
+    <ImageView
+        android:id="@+id/login_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:src="@drawable/image" />
+
+    <EditText
+        android:id="@+id/login_email_ev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/background_edit_text"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:padding="10dp" />
+
+    <EditText
+        android:id="@+id/login_password_ev"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/background_edit_text"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/login_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/background_btn"
+        android:text="@string/login"
+        android:textColor="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/login_to_register_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/don_t_have_an_account_sign_up" />
+
+</LinearLayout>
