@@ -100,7 +100,7 @@ public class RegisterFragment extends Fragment {
                 str_userImage=mImageUri.toString();
             }
             else {
-                str_userImage="https://firebasestorage.googleapis.com/v0/b/sharimage-79587.appspot.com/o/person.png?alt=media&token=9c4b00d7-6134-4b67-85d8-70b6e7bce7de";
+                str_userImage="https://firebasestorage.googleapis.com/v0/b/shareimage-ff623.appspot.com/o/person.png?alt=media&token=4bf4885d-19e8-4975-9f19-3d48ec7d9295";
             }
             //one or more fields are empty
             if (TextUtils.isEmpty(str_userName) || TextUtils.isEmpty(str_fullName) || TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)){
@@ -149,6 +149,7 @@ public class RegisterFragment extends Fragment {
 
         verifyPermissions();
     }
+    /*
     public void showAlertDialogButtonClicked(View view) {
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -178,6 +179,7 @@ public class RegisterFragment extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    */
 
 
 
