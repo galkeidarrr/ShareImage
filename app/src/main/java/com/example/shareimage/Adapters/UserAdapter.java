@@ -87,6 +87,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
                     editor.putString("profileid", user.getId());
                     editor.apply();
+                    //TODO: check if visit another profile
                     Navigation.createNavigateOnClickListener(R.id.action_global_profileFragment);
 
                 } else {
@@ -152,9 +153,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
 
 }
-
-
-
 
 
     @Override
