@@ -41,7 +41,7 @@ public class LoginFragment extends Fragment {
 
         login_email=v.findViewById(R.id.login_email_ev);
         login_password=v.findViewById(R.id.login_password_ev);
-        loginBtn=v.findViewById(R.id.login_btn);
+        loginBtn=v.findViewById(R.id.login_loginBtn);
 
 
         //TODO: change to authentication and after go to home

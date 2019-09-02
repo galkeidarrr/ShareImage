@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 
@@ -215,11 +216,9 @@ public class FireBaseModel {
             }
         });
     }
-    interface GetUserListener {
-        void onComplete(UserModel user);
-    }
 
-    public void getUser(String id, final GetUserListener listener) {
+
+    public void getUser(String id, Repository.GetUserListener listener) {
         db.collection("users").document(id).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -235,5 +234,80 @@ public class FireBaseModel {
                 });
     }
 
+
+    public void addFollowNotification(String userId,final Repository.GetNotifiListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        NotificationModel notificationModel=new NotificationModel(firebaseUser.getUid(),"started following you","",false);
+        db.collection("Notifications").document(userId).set(notificationModel)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        listener.onComplete(task.isSuccessful());
+                    }
+                });
+
+    }
+
+    public void addFollow(UserModel userModel1, UserModel userModel2, final Repository.GetNewFollowListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        userModel1.getFollows().add(userModel2.getId());
+        userModel2.getFollowers().add(userModel1.getId());
+        db.collection("users").document(userModel1.getId()).set(userModel1)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        db.collection("users").document(userModel2.getId()).set(userModel2)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        listener.onComplete(task.isSuccessful());
+                                    }
+                                });
+                    }
+                });
+
+    }
+    public void deleteFollow(UserModel userModel1, UserModel userModel2,final Repository.DeleteFollowListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        userModel1.getFollows().remove(userModel2.getId());
+        userModel2.getFollowers().remove(userModel1.getId());
+        db.collection("users").document(userModel1.getId()).set(userModel1)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        db.collection("users").document(userModel2.getId()).set(userModel2)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        listener.onComplete(task.isSuccessful());
+                                    }
+                                });
+                    }
+                });
+    }
+
+    public void isFollowing(final String userid, final Button button, final Repository.GetisFollowListener listener){
+/*
+        firebaseUser = getAuthInstance().getCurrentUser();
+        db.collection("Following").document(firebaseAuth.getUid());
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("Follow").child(firebaseUser.getUid()).child("following");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(userid).exists()){
+                    button.setText("following");
+                } else{
+                    button.setText("follow");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        */
+    }
 
 }
