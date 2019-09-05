@@ -13,4 +13,6 @@
     <string name="already_have_an_account_log_in">Already have an account? Log in</string>
     <string name="home_fragment">Home Fragment</string>
     <string name="dialog_title">Choose Gallery or Camera:</string>
+    <string name="notification">Notification</string>
+    <string name="profile">Profile</string>
 </resources>

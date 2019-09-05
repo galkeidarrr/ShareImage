@@ -20,19 +20,19 @@
     <action android:id="@+id/action_global_searchFragment2" app:destination="@id/searchFragment" />
     <fragment
         android:id="@+id/shareFragment"
-        android:name="com.example.shareimage.ShareFragment"
+        android:name="com.example.shareimage.Fragments.ShareFragment"
         android:label="fragment_share"
         tools:layout="@layout/fragment_share" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.shareimage.ProfileFragment"
+        android:name="com.example.shareimage.Fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment" />
     <action android:id="@+id/action_global_shareFragment" app:destination="@id/shareFragment" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.example.shareimage.NotificationFragment"
+        android:name="com.example.shareimage.Fragments.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" /><action android:id="@+id/action_global_notificationFragment" app:destination="@id/notificationFragment"/>
 </navigation>

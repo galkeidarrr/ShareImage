@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +20,6 @@ import com.bumptech.glide.Glide;
 import com.example.shareimage.Activities.MainActivity;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
-import com.example.shareimage.ProfileFragment;
 import com.example.shareimage.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -100,7 +98,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
 
         //TODO: do followers function
-        final UserModel[] userModel1 = new UserModel[1];
+        final UserModel[] userModel1 = new UserModel[2];
         //if the user want to follow after other user change the button and update in database
         holder.btn_follow.setOnClickListener(new View.OnClickListener() {
             @Override
