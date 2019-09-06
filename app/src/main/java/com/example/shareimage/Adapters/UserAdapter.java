@@ -119,14 +119,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                                     public void onComplete(UserModel userModel) {
                                         if (userModel != null) {
                                             userModel1[1] = userModel;
-                                            Log.d(TAG, "onClick: "+userModel1[0]);
+                                            Log.d(TAG, "onClick: " + userModel1[0]);
                                             repository.instance.addFollow(userModel1[0], userModel1[1], new Repository.GetNewFollowListener() {
                                                 @Override
                                                 public void onComplete(boolean success) {
-                                                    repository.instance.addFollowNotification(firebaseUser.getUid(),new Repository.GetNotifiListener(){
+                                                    repository.instance.addFollowNotification(firebaseUser.getUid(), new Repository.GetNotifiListener() {
                                                         @Override
                                                         public void onComplete(boolean success) {
-                                                            if(!success){
+                                                            if (!success) {
                                                                 Log.d(TAG, "onComplete: faild to add follow");
                                                             }
                                                         }
@@ -141,17 +141,34 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                     });
                 } else {//If the user does not want to follow you return the button to the first option
                     // and remove it from the followers in Data Base
-                   repository.instance.deleteFollow(userModel1[0], userModel1[1], new Repository.DeleteFollowListener() {
-                       @Override
-                       public void onComplete(boolean success) {
-                           if(!success){
-                               Log.d(TAG, "onComplete: faild to remove follow");
-                           }
-                       }
-                   });
+                    repository.instance.getUser(user.getId(), new Repository.GetUserListener() {
+                        @Override
+                        public void onComplete(UserModel userModel) {
+                            if (userModel != null) {
+                                userModel1[0] = userModel;
+                                repository.instance.getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
+                                    @Override
+                                    public void onComplete(UserModel userModel) {
+                                        if (userModel != null) {
+                                            userModel1[1] = userModel;
+                                            Log.d(TAG, "onClick: " + userModel1[0]);
+                                            repository.instance.deleteFollow(userModel1[0], userModel1[1], new Repository.DeleteFollowListener() {
+                                                @Override
+                                                public void onComplete(boolean success) {
+                                                    if (!success) {
+                                                        Log.d(TAG, "onComplete: faild to remove follow");
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+
                 }
             }
-
         });
 
 
