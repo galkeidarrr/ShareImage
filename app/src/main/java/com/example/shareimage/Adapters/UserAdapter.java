@@ -24,6 +24,7 @@ import com.example.shareimage.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -33,25 +34,23 @@ import static android.content.Context.MODE_PRIVATE;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolder>{
     private static final String TAG = "UserAdapter";
     private Context mContext;
+
+
     private List<UserModel> mUsers;
     private boolean isFragment;
     Repository repository;
     private FirebaseUser firebaseUser;
 
     //Constractor with variables
-    public UserAdapter(Context context, List<UserModel> users, boolean isFragment){
+    public UserAdapter(Context context, ArrayList<UserModel> users, boolean isFragment){
         mContext = context;
-        repository.getAllUsers(new Repository.GetAllUsersListener() {
-            @Override
-            public void onComplete(List<UserModel> data) {
-                if(data!=null){
-                    mUsers=data;
-                }
-            }
-        });
+        Log.d(TAG, "UserAdapter: "+users);
+        mUsers=users;
         this.isFragment = isFragment;
     }
-
+    public void setmUsers(List<UserModel> mUsers) {
+        this.mUsers = mUsers;
+    }
     @NonNull
     @Override
     public UserAdapter.ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,7 +66,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         final UserModel user = mUsers.get(position);
 
         holder.btn_follow.setVisibility(View.VISIBLE);
-        //isFollowing(user.getId(), holder.btn_follow);
+        holder.btn_follow.setText("follow");
+        repository.instance.isFollowing(user.getId(), holder.btn_follow, new Repository.GetisFollowListener() {
+            @Override
+            public void onComplete(boolean success) {
+                Log.d(TAG, "onComplete: following button is change if follow");
+            }
+        });
 
         holder.username.setText(user.getUserName());
         holder.fullname.setText(user.getFullName());
@@ -103,40 +108,40 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         holder.btn_follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                repository.getUser(user.getId(), new Repository.GetUserListener() {
-                    @Override
-                    public void onComplete(UserModel userModel) {
-                        if(userModel!=null){
-                            userModel1[0] =userModel;
-                        }
-                    }
-                });
-                repository.getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
-                    @Override
-                    public void onComplete(UserModel userModel) {
-                        if(userModel!=null){
-                            userModel1[1] =userModel;
-                        }
-                    }
-                });
                 if (holder.btn_follow.getText().toString().equals("follow")) {
-                    repository.addFollow(userModel1[0], userModel1[1], new Repository.GetNewFollowListener() {
+                    repository.instance.getUser(user.getId(), new Repository.GetUserListener() {
                         @Override
-                        public void onComplete(boolean success) {
-                            repository.addFollowNotification(user.getId(),new Repository.GetNotifiListener(){
-                                @Override
-                                public void onComplete(boolean success) {
-                                    if(!success){
-                                        Log.d(TAG, "onComplete: faild to add follow");
+                        public void onComplete(UserModel userModel) {
+                            if (userModel != null) {
+                                userModel1[0] = userModel;
+                                repository.instance.getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
+                                    @Override
+                                    public void onComplete(UserModel userModel) {
+                                        if (userModel != null) {
+                                            userModel1[1] = userModel;
+                                            Log.d(TAG, "onClick: "+userModel1[0]);
+                                            repository.instance.addFollow(userModel1[0], userModel1[1], new Repository.GetNewFollowListener() {
+                                                @Override
+                                                public void onComplete(boolean success) {
+                                                    repository.instance.addFollowNotification(firebaseUser.getUid(),new Repository.GetNotifiListener(){
+                                                        @Override
+                                                        public void onComplete(boolean success) {
+                                                            if(!success){
+                                                                Log.d(TAG, "onComplete: faild to add follow");
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
                     });
-
                 } else {//If the user does not want to follow you return the button to the first option
                     // and remove it from the followers in Data Base
-                   repository.deleteFollow(userModel1[0], userModel1[1], new Repository.DeleteFollowListener() {
+                   repository.instance.deleteFollow(userModel1[0], userModel1[1], new Repository.DeleteFollowListener() {
                        @Override
                        public void onComplete(boolean success) {
                            if(!success){
@@ -155,6 +160,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
     @Override
     public int getItemCount() {
+        if(mUsers==null){
+            return 0;
+        }
         return mUsers.size();
     }
 

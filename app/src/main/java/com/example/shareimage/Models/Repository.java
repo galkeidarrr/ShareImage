@@ -9,6 +9,7 @@ import android.widget.Button;
 import com.example.shareimage.ViewModels.MyApplication;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Repository {//singleton model to manage all the information (sqlite ,firebase,storage,files)
@@ -24,7 +25,7 @@ public class Repository {//singleton model to manage all the information (sqlite
         sqlModel=new SqlModel();
     }
     public interface GetAllUsersListener{
-        void onComplete(List<UserModel> data);
+        void onComplete(ArrayList<UserModel> data);
     }
     public void getAllUsers(GetAllUsersListener listener) {
         fireBaseModel.getAllUsers(listener);
@@ -61,6 +62,10 @@ public class Repository {//singleton model to manage all the information (sqlite
     public interface GetNotifiListener {
         void onComplete(boolean success);
     }
+
+    public void addLikeNotification(String userId,String postId,GetNotifiListener listener){
+        fireBaseModel.addLikeNotification(userId,postId,listener);
+    }
     public void addFollowNotification(String userId, GetNotifiListener listener){
         fireBaseModel.addFollowNotification(userId,listener);
     }
@@ -79,13 +84,19 @@ public class Repository {//singleton model to manage all the information (sqlite
         fireBaseModel.deleteFollow(userModel1,userModel2,listener);
     }
 
-    interface GetisFollowListener {
-        void onComplete(UserModel user);
+    public interface GetisFollowListener {
+        void onComplete(boolean success);
     }
     public void isFollowing(final String userid, final Button button,GetisFollowListener listener){
         fireBaseModel.isFollowing(userid,button,listener);
     }
 
+    public interface GetSearchUsersListener {
+        void onComplete(ArrayList<UserModel> userModelArrayList);
+    }
+    public void searchUsers(String s,GetSearchUsersListener listener){
+        fireBaseModel.searchUsers(s,listener);
+    }
     //TODO: get all users and add user
     //public void addUser(UserModel user) {FireBaseModel.addUser(user); }
 

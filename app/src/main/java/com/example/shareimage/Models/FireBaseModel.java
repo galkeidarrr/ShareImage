@@ -22,6 +22,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,6 +32,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -45,6 +47,7 @@ public class FireBaseModel {
     String miUrlOk = "";
     private StorageTask uploadTask;
     StorageReference storageRef;
+    ArrayList<UserModel> searchList;
     public FireBaseModel(){
         db=FirebaseFirestore.getInstance();
         FirebaseFirestoreSettings settings = new
@@ -53,7 +56,6 @@ public class FireBaseModel {
                 .build();
         db.setFirestoreSettings(settings);
         firebaseAuth=FirebaseAuth.getInstance();
-
 
     }
 
@@ -203,18 +205,22 @@ public class FireBaseModel {
         db.collection("users").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                LinkedList<UserModel> data = new LinkedList<>();
+                ArrayList<UserModel> data = new ArrayList<>();
                 if (e != null) {
                     listener.onComplete(data);
                     return;
                 }
                 for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    UserModel user= doc.toObject(UserModel.class);
+                    UserModel user= new UserModel(doc.getString("id"),doc.getString("email"),
+                            doc.getString("password"),doc.getString("userName"),
+                            doc.getString("fullName"),doc.getString("imageUrl"),
+                            doc.getString("bio"));
                     data.add(user);
                 }
                 listener.onComplete(data);
             }
         });
+
     }
 
 
@@ -233,7 +239,18 @@ public class FireBaseModel {
                     }
                 });
     }
+    public void addLikeNotification(String userId,String postId,final Repository.GetNotifiListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        NotificationModel notificationModel=new NotificationModel(firebaseUser.getUid(),"liked your post",postId,false);
+        db.collection("Notifications").document(userId).set(notificationModel)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        listener.onComplete(task.isSuccessful());
+                    }
+                });
 
+    }
 
     public void addFollowNotification(String userId,final Repository.GetNotifiListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
@@ -285,9 +302,26 @@ public class FireBaseModel {
                     }
                 });
     }
-
+    UserModel mUser=null;
     public void isFollowing(final String userid, final Button button, final Repository.GetisFollowListener listener){
-/*
+        firebaseUser=getAuthInstance().getCurrentUser();
+
+        getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
+            @Override
+            public void onComplete(UserModel userModel) {
+                if(userModel!=null) {
+                    mUser = userModel;
+                    if(mUser.getFollowers().contains(userid)){
+                        button.setText("following");
+                    }else{
+                        button.setText("follow");
+                    }
+                    listener.onComplete(true);
+                }
+            }
+        });
+        listener.onComplete(false);
+        /*
         firebaseUser = getAuthInstance().getCurrentUser();
         db.collection("Following").document(firebaseAuth.getUid());
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
@@ -308,6 +342,36 @@ public class FireBaseModel {
             }
         });
         */
+    }
+
+    public void searchUsers(String s, Repository.GetSearchUsersListener listener){
+        searchList=new ArrayList<>();
+        db.collection("users").orderBy("userName").startAt(s).endAt(s+"\uf8ff")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        //call when searching is succeeded
+                        Log.d(TAG, "onComplete: search do good job!"+task.getResult().getDocuments());
+                        searchList.clear();
+                        for (DocumentSnapshot doc: task.getResult()){
+                            UserModel userModel= new UserModel(doc.getString("id"),doc.getString("email"),
+                                    doc.getString("password"),doc.getString("userName"),
+                                    doc.getString("fullName"),doc.getString("imageUrl"),
+                                    doc.getString("bio"));
+                            searchList.add(userModel);
+                        }
+                        listener.onComplete(searchList);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //when there is any error
+                Log.d(TAG, "onFailure: error: "+e);
+
+            }
+        });
+
     }
 
 }
