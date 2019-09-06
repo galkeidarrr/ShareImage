@@ -96,7 +96,9 @@ public class FireBaseModel {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    firebaseAuth.updateCurrentUser(task.getResult().getUser());
+                    Log.d(TAG, "onComplete: "+task.getResult().getUser());
+                    firebaseUser=task.getResult().getUser();
+                    //firebaseAuth.updateCurrentUser(task.getResult().getUser());
                 }
                 l.onComplete(task.isSuccessful());
             }
@@ -306,6 +308,7 @@ public class FireBaseModel {
                     }
                 });
     }
+
     public void addLikeNotification(String userId,String postId,final Repository.GetNotifiListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
         NotificationModel notificationModel=new NotificationModel(firebaseUser.getUid(),"liked your post",postId,false);
@@ -436,6 +439,26 @@ public class FireBaseModel {
                 //when there is any error
                 Log.d(TAG, "onFailure: error: "+e);
 
+            }
+        });
+
+    }
+
+
+    public void getAllPost(final Repository.GetAllPostsListener listener){
+        db.collection("posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                ArrayList<PostModel> data = new ArrayList<>();
+                if (e != null) {
+                    listener.onComplete(data);
+                    return;
+                }
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    PostModel post= doc.toObject(PostModel.class);
+                    data.add(post);
+                }
+                listener.onComplete(data);
             }
         });
 

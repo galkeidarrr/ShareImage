@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.shareimage.Models.PostModel;
+import com.example.shareimage.Models.Repository;
+import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,6 +39,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
     private Context mContext;
     private List<PostModel> mPosts;
 
+    Repository repository;
     private FirebaseUser firebaseUser;
     //Constractor with variables
     public PostAdapter(Context context, List<PostModel> posts){
@@ -67,14 +70,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             holder.description.setVisibility(View.VISIBLE);
             holder.description.setText(post.getDescription());
         }
-/*
+
         publisherInfo(holder.image_profile, holder.username, holder.publisher, post.getPublisher());
-        isLiked(post.getPostId(), holder.like);
-        isSaved(post.getPostId(), holder.save);
-        nrLikes(holder.likes, post.getPostId());
-        getCommetns(post.getPostId(), holder.comments);
+        //isLiked(post.getPostId(), holder.like);
+        //isSaved(post.getPostId(), holder.save);
+        //nrLikes(holder.likes, post.getPostId());
+        //getCommetns(post.getPostId(), holder.comments);
 
-
+/*
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on like
@@ -222,7 +225,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                 popupMenu.show();
             }
         });
-        */
+*/
     }
 
     @Override
@@ -252,7 +255,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
         }
     }
 
-    /*
+/*
     //add notification about likes posts
     private void addNotification(String userid, String postid){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(userid);
@@ -326,26 +329,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
     }
+    */
 
     //get the details of the publisher
     private void publisherInfo(final ImageView image_profile, final TextView username, final TextView publisher, final String userid){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(userid);
-
-        reference.addValueEventListener(new ValueEventListener() {
+        repository.instance.getUser(userid, new Repository.GetUserListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                User user = dataSnapshot.getValue(User.class);//get the info about the user that publish this post
-                Glide.with(mContext).load(user.getImageurl()).into(image_profile);
-                username.setText(user.getUsername());
-                publisher.setText(user.getUsername());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onComplete(UserModel userModel) {
+                if(userModel!=null){
+                    UserModel user=userModel;
+                    Glide.with(mContext).load(user.getImageUrl()).into(image_profile);
+                    username.setText(user.getUserName());
+                    publisher.setText(user.getUserName());
+                }
             }
         });
+
     }
+    /*
 
     //for setting the button of likes
     private void isLiked(final String postid, final ImageView imageView){
@@ -451,5 +452,5 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
     }
-    */
+*/
 }

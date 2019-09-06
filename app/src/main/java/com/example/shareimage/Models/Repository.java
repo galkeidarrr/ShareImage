@@ -107,5 +107,12 @@ public class Repository {//singleton model to manage all the information (sqlite
         fireBaseModel.addPost(post,mImageUri,l);
     }
 
+    public interface GetAllPostsListener{
+        void onComplete(ArrayList<PostModel> data);
+    }
+    public void getAllPost(final GetAllPostsListener listener){
+        fireBaseModel.getAllPost(listener);
+    }
+
 }
 
