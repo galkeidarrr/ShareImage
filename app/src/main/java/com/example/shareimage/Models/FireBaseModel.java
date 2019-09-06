@@ -6,9 +6,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 
+import com.example.shareimage.R;
 import com.example.shareimage.ViewModels.MyApplication;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.annotation.Nullable;
@@ -101,6 +105,69 @@ public class FireBaseModel {
 
     public void logOut() {
         getAuthInstance().signOut();
+    }
+
+    public void addPost(final PostModel post, final Uri mImageUri, final Repository.AddPostListener l){
+        Log.d(TAG, "register: create new user");
+        db.collection("posts").document(post.getPostId()).set(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    uploadPost(post,mImageUri);
+                }
+                l.onComplete(task.isSuccessful());
+            }
+        });
+
+    }
+
+    public void uploadPost(PostModel post,Uri mImageUri){
+        Log.d(TAG, "uploadPost: upload new post");
+        storageRef = FirebaseStorage.getInstance().getReference("posts");
+        if (mImageUri != null){//If the selected or taken image is not null
+            //Save in storage with this path
+            final StorageReference fileReference = storageRef.child(System.currentTimeMillis()
+                    + "." + mImageUri.getLastPathSegment());
+
+            uploadTask = fileReference.putFile(mImageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    Log.d(TAG, "then: task of upload the file(image) to the storage");
+                    if (!task.isSuccessful()) {//If the save in the storage is Unsuccessful
+                        throw task.getException();
+                    }
+                    return fileReference.getDownloadUrl();//if successful return the URI
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    Log.d(TAG, "onComplete: task complete");
+                    if (task.isSuccessful()) {//if success
+                        Uri downloadUri = task.getResult();
+                        miUrlOk = downloadUri.toString();
+                        post.setPostImage(miUrlOk);
+                        db.collection("posts").document(post.getPostId()).set(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d(TAG, "onComplete: final !!");
+                            }
+                        });
+                    } else {//If did not succeed the task of upload post and save toast a message
+                        Log.d(TAG, "onComplete: task not succeed");
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {//if Did not succeed toast a exception message
+                    Log.d(TAG, "onComplete: task not succeed and not complete");
+                }
+            });
+
+        } else {//The user did not choose to upload a photo
+            Log.d(TAG, "uploadImage: The user did not choose to upload a photo ");
+        }
+
     }
 
     //Upload a profile picture and edit the user with the new one

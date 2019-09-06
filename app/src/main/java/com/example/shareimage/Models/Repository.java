@@ -100,5 +100,12 @@ public class Repository {//singleton model to manage all the information (sqlite
     //TODO: get all users and add user
     //public void addUser(UserModel user) {FireBaseModel.addUser(user); }
 
+    public interface AddPostListener {
+        void onComplete(boolean success);
+    }
+    public void addPost(final PostModel post, final Uri mImageUri, final Repository.AddPostListener l){
+        fireBaseModel.addPost(post,mImageUri,l);
+    }
+
 }
 

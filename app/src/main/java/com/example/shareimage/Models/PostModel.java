@@ -1,10 +1,16 @@
 package com.example.shareimage.Models;
 
+import java.util.List;
+
 public class PostModel {
     private String postId;
     private String postImage;
     private String description;
     private String publisher;
+
+
+    public List<String> likes;
+    public List<CommentModel> comments;
 
     public PostModel(String postId, String postImage, String description, String publisher) {
         this.postId = postId;
@@ -46,5 +52,20 @@ public class PostModel {
 
     public void setPublisher(String publisher) {
         this.publisher = publisher;
+    }
+    public List<String> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<String> likes) {
+        this.likes = likes;
+    }
+
+    public List<CommentModel> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentModel> comments) {
+        this.comments = comments;
     }
 }
