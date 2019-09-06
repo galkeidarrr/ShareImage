@@ -238,17 +238,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
         public ImageViewHolder(View itemView) {
             super(itemView);
 
-            image_profile = itemView.findViewById(R.id.image_profile);
-            username = itemView.findViewById(R.id.username);
-            post_image = itemView.findViewById(R.id.post_image);
-            like = itemView.findViewById(R.id.like);
-            comment = itemView.findViewById(R.id.comment);
-            save = itemView.findViewById(R.id.save);
-            likes = itemView.findViewById(R.id.likes);
-            publisher = itemView.findViewById(R.id.publisher);
-            description = itemView.findViewById(R.id.description);
-            comments = itemView.findViewById(R.id.comments);
-            more = itemView.findViewById(R.id.more);
+            image_profile = itemView.findViewById(R.id.prow_image_profile);
+            username = itemView.findViewById(R.id.prow_username);
+            post_image = itemView.findViewById(R.id.prow_post_image);
+            like = itemView.findViewById(R.id.prow_like);
+            comment = itemView.findViewById(R.id.prow_comment);
+            save = itemView.findViewById(R.id.prow_save);
+            likes = itemView.findViewById(R.id.prow_likes);
+            publisher = itemView.findViewById(R.id.prow_publisher);
+            description = itemView.findViewById(R.id.prow_description);
+            comments = itemView.findViewById(R.id.prow_comments);
+            more = itemView.findViewById(R.id.prow_more);
         }
     }
 
