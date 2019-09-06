@@ -25,13 +25,13 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:id="@+id/image_profile"
+                android:id="@+id/prow_image_profile"
                 android:layout_margin="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/username"
+                android:id="@+id/prow_username"
                 android:layout_gravity="center_vertical"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -46,7 +46,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:id="@+id/post_image"
+                android:id="@+id/prow_post_image"
                 app:layout_constraintDimensionRatio="1:1"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -59,21 +59,21 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:id="@+id/like"
+                android:id="@+id/prow_like"
                 android:src="@drawable/ic_like"/>
 
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:id="@+id/comment"
+                android:id="@+id/prow_comment"
                 android:src="@drawable/ic_comment"
-                android:layout_toEndOf="@id/like"
+                android:layout_toEndOf="@id/prow_like"
                 android:layout_marginStart="10dp"/>
 
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:id="@+id/save"
+                android:id="@+id/prow_save"
                 android:src="@drawable/ic_savee_black"
                 android:layout_alignParentEnd="true"/>
 
@@ -85,7 +85,7 @@
             android:layout_marginStart="8dp"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold"
-            android:id="@+id/likes"/>
+            android:id="@+id/prow_likes"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -93,14 +93,14 @@
             android:layout_marginStart="8dp"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold"
-            android:id="@+id/publisher"/>
+            android:id="@+id/prow_publisher"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textColor="@color/colorPrimaryDark"
-            android:id="@+id/description"/>
+            android:id="@+id/prow_description"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="5dp"
             android:textColor="@color/colorAccent"
-            android:id="@+id/comments"
+            android:id="@+id/prow_comments"
             android:layout_marginBottom="10dp"/>
 
     </LinearLayout>
