@@ -144,8 +144,8 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        myFotos();
-        mySaves();
+        //myFotos();
+        //mySaves();
 
         if (profileid.equals(firebaseUser.getUid())){//if the current user want to edit profile
             edit_profile.setText("Edit Profile");
@@ -275,7 +275,7 @@ public class ProfileFragment extends Fragment {
 
 
 
-
+/*
 
     //get the followers and following count to show in profile
     private void getFollowers(){
@@ -398,5 +398,7 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
+    */
 }
 
