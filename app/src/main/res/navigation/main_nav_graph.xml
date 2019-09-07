@@ -41,7 +41,7 @@
         tools:layout="@layout/fragment_notification" /><action android:id="@+id/action_global_notificationFragment" app:destination="@id/notificationFragment"/>
     <fragment
         android:id="@+id/commentsFragment"
-        android:name="com.example.shareimage.CommentsFragment"
+        android:name="com.example.shareimage.Fragments.CommentsFragment"
         android:label="fragment_comments"
         tools:layout="@layout/fragment_comments" />
 </navigation>
