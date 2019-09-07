@@ -204,18 +204,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                         .navigate(R.id.action_homeFragment_to_postFragment);
             }
         });
+
+
+        //safeArgs
+
+        HomeFragmentDirections.ActionHomeFragmentToFollowersFragment action1=HomeFragmentDirections.actionHomeFragmentToFollowersFragment(post.getPostId(),"likes");
+        //if click on comment go to comment activity- for left comment
+        holder.likes.setOnClickListener(Navigation.createNavigateOnClickListener(action1));
+
+
 /*
-        holder.likes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {//if click on likes go to followers activity to see all the followers that liked
-                Intent intent = new Intent(mContext, FollowersActivity.class);
-                intent.putExtra("id", post.getPostid());
-                intent.putExtra("title", "likes");
-                mContext.startActivity(intent);
-            }
-        });
-
-
         holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click more go to manu to chose if edit or remove

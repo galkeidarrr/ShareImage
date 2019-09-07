@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_homeFragment_to_postFragment"
             app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_followersFragment"
+            app:destination="@id/followersFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_homeFragment"
@@ -78,7 +81,14 @@
         android:id="@+id/followersFragment"
         android:name="com.example.shareimage.Fragments.FollowersFragment"
         android:label="fragment_followers"
-        tools:layout="@layout/fragment_followers" />
+        tools:layout="@layout/fragment_followers" >
+        <argument
+            android:name="id"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 
 
 </navigation>
