@@ -152,6 +152,25 @@ public class Repository {//singleton model to manage all the information (sqlite
     public  void deleteLike(final String postid,DeleteLikeListener listener){
         fireBaseModel.deleteLike(postid,listener);
     }
+    public interface AddCommentListener {
+        void onComplete(String commentid);
+    }
+    public void addComment(final String comment,final String publisherid,AddCommentListener listener){
+        fireBaseModel.addComment(comment,publisherid,listener);
+    }
+
+    public void addCommentNotification(String commentId,String publisherid,String comment,String postId,GetNotifiListener listener){
+        fireBaseModel.addCommentNotification(commentId,publisherid,comment,postId,listener);
+    }
+    public void removeCommentNotification(String commentId,GetNotifiListener listener){
+        fireBaseModel.removeCommentNotification(commentId,listener);
+    }
+    public interface GetAllCommentsListener{
+        void onComplete(ArrayList<CommentModel> data);
+    }
+    public void getAllComments(GetAllCommentsListener listener){
+        fireBaseModel.getAllComments(listener);
+    }
 
 }
 

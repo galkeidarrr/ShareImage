@@ -17,10 +17,12 @@ import com.example.shareimage.ViewModels.MyApplication;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -464,9 +466,6 @@ public class FireBaseModel {
             }
         });
 
-
-
-
     }
 
     public void getPost(final String postid,final Repository.GetPostListener listener){
@@ -543,4 +542,62 @@ public class FireBaseModel {
         });
     }
 
+
+    public void addComment(final String comment,final String publisherid, final Repository.AddCommentListener listener){
+
+        CommentModel c=new CommentModel(comment,publisherid,"");
+        db.collection("comments").add(c).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                c.setCommentId(documentReference.getId());
+                db.collection("comments").document(documentReference.getId()).set(c).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        listener.onComplete(documentReference.getId());
+                    }
+                });
+            }
+        });
+    }
+    String commentL;
+    public void addCommentNotification(String commentId,String publisherid,String comment,String postId,final Repository.GetNotifiListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        commentL="commented: "+comment;
+        NotificationModel notificationModel=new NotificationModel(firebaseUser.getUid(),publisherid,commentL,postId,true);
+        db.collection("Notifications").document(commentId).set(notificationModel)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        listener.onComplete(task.isSuccessful());
+                    }
+                });
+    }
+
+    public void removeCommentNotification(String commentId,final Repository.GetNotifiListener listener){
+        db.collection("Notifications").document(commentId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete(task.isSuccessful());
+            }
+        });
+    }
+
+    public void getAllComments(final Repository.GetAllCommentsListener listener){
+        db.collection("comments").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    ArrayList<CommentModel> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        CommentModel comment= document.toObject(CommentModel.class);
+                        list.add(comment);
+                    }
+                    listener.onComplete(list);
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+                listener.onComplete(null);
+            }
+        });
+    }
 }

@@ -7,23 +7,31 @@
     tools:context=".Activities.MainActivity">
 
 
-    <fragment
-        android:id="@+id/main_navigation"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/main_nav_graph" />
+        android:orientation="vertical">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bottom_navigation"
-        app:itemIconTint="@color/logo_selector"
-        app:itemTextColor="@color/colorAccent"
-        app:labelVisibilityMode="selected"
-        app:menu="@menu/bottom_nav_menu"
-        android:background="?android:attr/windowBackground"
-        app:layout_constraintBottom_toBottomOf="@id/main_navigation"
-        tools:ignore="MissingConstraints" />
+        <fragment
+            android:id="@+id/main_navigation"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="607dp"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/main_nav_graph" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bottom_navigation"
+            app:itemIconTint="@color/logo_selector"
+            app:itemTextColor="@color/colorAccent"
+            app:labelVisibilityMode="selected"
+            app:menu="@menu/bottom_nav_menu"
+            android:background="?android:attr/windowBackground"
+            app:layout_constraintBottom_toBottomOf="@id/main_navigation"
+            tools:ignore="MissingConstraints" />
+    </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

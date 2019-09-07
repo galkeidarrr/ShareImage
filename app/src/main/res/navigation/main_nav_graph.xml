@@ -15,13 +15,17 @@
             android:id="@+id/action_homeFragment_to_commentsFragment"
             app:destination="@id/commentsFragment" />
     </fragment>
-    <action android:id="@+id/action_global_homeFragment2" app:destination="@id/homeFragment" />
+    <action
+        android:id="@+id/action_global_homeFragment"
+        app:destination="@id/homeFragment" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.shareimage.Fragments.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
-    <action android:id="@+id/action_global_searchFragment2" app:destination="@id/searchFragment" />
+    <action
+        android:id="@+id/action_global_searchFragment"
+        app:destination="@id/searchFragment" />
     <fragment
         android:id="@+id/shareFragment"
         android:name="com.example.shareimage.Fragments.ShareFragment"
@@ -32,16 +36,32 @@
         android:name="com.example.shareimage.Fragments.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
-    <action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment" />
-    <action android:id="@+id/action_global_shareFragment" app:destination="@id/shareFragment" />
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment" />
+    <action
+        android:id="@+id/action_global_shareFragment"
+        app:destination="@id/shareFragment" />
     <fragment
         android:id="@+id/notificationFragment"
         android:name="com.example.shareimage.Fragments.NotificationFragment"
         android:label="fragment_notification"
-        tools:layout="@layout/fragment_notification" /><action android:id="@+id/action_global_notificationFragment" app:destination="@id/notificationFragment"/>
+        tools:layout="@layout/fragment_notification" />
+    <action
+        android:id="@+id/action_global_notificationFragment"
+        app:destination="@id/notificationFragment" />
     <fragment
         android:id="@+id/commentsFragment"
         android:name="com.example.shareimage.Fragments.CommentsFragment"
         android:label="fragment_comments"
-        tools:layout="@layout/fragment_comments" />
+        tools:layout="@layout/fragment_comments" >
+        <argument
+            android:name="postId"
+            app:argType="string" />
+        <argument
+            android:name="publisherId"
+            app:argType="string" />
+    </fragment>
+
+
 </navigation>

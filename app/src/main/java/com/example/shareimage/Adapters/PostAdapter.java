@@ -1,40 +1,32 @@
 package com.example.shareimage.Adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.navigation.NavAction;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.shareimage.Fragments.HomeFragmentDirections;
 import com.example.shareimage.Models.PostModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.HashMap;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolder>{
     private static final String TAG = "PostAdapter";
@@ -186,27 +178,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                         new ProfileFragment()).commit();
             }
         });
-//
-        holder.comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {//if click on comment go to comment activity- for left comment
-                Intent intent = new Intent(mContext, CommentsActivity.class);
-                intent.putExtra("postid", post.getPostid());
-                intent.putExtra("publisherid", post.getPublisher());
-                mContext.startActivity(intent);
-            }
-        });
 
-        holder.comments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {//if click on comments go to comments activity -to see all the comments
-                Intent intent = new Intent(mContext, CommentsActivity.class);
-                intent.putExtra("postid", post.getPostid());
-                intent.putExtra("publisherid", post.getPublisher());
-                mContext.startActivity(intent);
-            }
-        });
+*/
+//safeArgs
+        HomeFragmentDirections.ActionHomeFragmentToCommentsFragment action=HomeFragmentDirections.actionHomeFragmentToCommentsFragment(post.getPostId(),post.getPublisher());
 
+        //if click on comment go to comment activity- for left comment
+        holder.comment.setOnClickListener(Navigation.createNavigateOnClickListener(action));
+        //if click on comments go to comments activity -to see all the comments
+        holder.comments.setOnClickListener(Navigation.createNavigateOnClickListener(action));
+/*
         holder.post_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on post image go to post detail fragment to see the post

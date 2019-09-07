@@ -82,7 +82,7 @@ public class ShareFragment extends Fragment {
                     public void onComplete(boolean success) {
                         if (success){
                             Navigation.findNavController(view)
-                                    .navigate(R.id.action_global_homeFragment2);
+                                    .navigate(R.id.action_global_homeFragment);
                         }
                     }
                 });
