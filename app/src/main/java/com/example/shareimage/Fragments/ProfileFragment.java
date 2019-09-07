@@ -6,10 +6,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +23,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.shareimage.Adapters.MyPhotosAdapter;
 import com.example.shareimage.Models.PostModel;
+import com.example.shareimage.Models.Repository;
+import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,11 +40,13 @@ import static android.content.Context.MODE_PRIVATE;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
-
+    private static final String TAG = "ProfileFragment";
     ImageView image_profile, options;
     TextView posts, followers, following, fullname, bio, username;
     Button edit_profile;
 
+    FirebaseUser firebaseUser;
+    Repository repository;
     private List<String> mySaves;
 
 
@@ -101,7 +108,16 @@ public class ProfileFragment extends Fragment {
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView_saves.setVisibility(View.GONE);
 
-        userInfo();
+        firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
+
+        repository.instance.getUser(profileid, new Repository.GetUserListener() {
+            @Override
+            public void onComplete(UserModel userModel) {
+                if(userModel!=null){
+                    
+                }
+            }
+        });
         getFollowers();
         getNrPosts();
         myFotos();
@@ -110,9 +126,17 @@ public class ProfileFragment extends Fragment {
         if (profileid.equals(firebaseUser.getUid())){//if the current user want to edit profile
             edit_profile.setText("Edit Profile");
         } else {//only the current can edit
-            checkFollow();
-            saved_fotos.setVisibility(View.GONE);
+            edit_profile.setText("follow");
+            repository.instance.isFollowing(profileid, edit_profile, new Repository.GetisFollowListener() {
+                @Override
+                public void onComplete(boolean success) {
+                    Log.d(TAG, "onComplete: following button is change if follow");
+                }
+            });
+            saved_photos.setVisibility(View.GONE);
         }
+
+        final UserModel[] userModel1 = new UserModel[2];
 
         edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,34 +144,79 @@ public class ProfileFragment extends Fragment {
                 String btn = edit_profile.getText().toString();
 
                 if (btn.equals("Edit Profile")){//if click on edit go to edit
-                    Intent intent=new Intent(getContext(), EditProfileActivity.class);
-                    startActivity(intent);
+                    Navigation.findNavController(view)
+                            .navigate(R.id.action_profileFragment_to_editProfileFragment);
 
                 } else if (btn.equals("follow")){//if click on follow now the current user follow on other
-
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
-                            .child("following").child(profileid).setValue(true);
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(profileid)
-                            .child("followers").child(firebaseUser.getUid()).setValue(true);
-                    addNotification();
+                    repository.instance.getUser(profileid, new Repository.GetUserListener() {
+                        @Override
+                        public void onComplete(UserModel userModel) {
+                            if (userModel != null) {
+                                userModel1[0] = userModel;
+                                repository.instance.getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
+                                    @Override
+                                    public void onComplete(UserModel userModel) {
+                                        if (userModel != null) {
+                                            userModel1[1] = userModel;
+                                            Log.d(TAG, "onClick: " + userModel1[0]);
+                                            repository.instance.addFollow(userModel1[0], userModel1[1], new Repository.GetNewFollowListener() {
+                                                @Override
+                                                public void onComplete(boolean success) {
+                                                    repository.instance.addFollowNotification(userModel1[0].getId(), new Repository.GetNotifiListener() {
+                                                        @Override
+                                                        public void onComplete(boolean success) {
+                                                            if (!success) {
+                                                                Log.d(TAG, "onComplete: failed to add follow");
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
                 } else if (btn.equals("following")){//if click on following now the current user unfollow on other
-
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
-                            .child("following").child(profileid).removeValue();
-                    FirebaseDatabase.getInstance().getReference().child("Follow").child(profileid)
-                            .child("followers").child(firebaseUser.getUid()).removeValue();
-
+                    repository.instance.getUser(profileid, new Repository.GetUserListener() {
+                        @Override
+                        public void onComplete(UserModel userModel) {
+                            if (userModel != null) {
+                                userModel1[0] = userModel;
+                                repository.instance.getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
+                                    @Override
+                                    public void onComplete(UserModel userModel) {
+                                        if (userModel != null) {
+                                            userModel1[1] = userModel;
+                                            Log.d(TAG, "onClick: " + userModel1[0]);
+                                            repository.instance.deleteFollow(userModel1[0], userModel1[1], new Repository.DeleteFollowListener() {
+                                                @Override
+                                                public void onComplete(boolean success) {
+                                                    repository.instance.removeFollowNotification(userModel1[0].getId(), new Repository.GetNotifiListener() {
+                                                        @Override
+                                                        public void onComplete(boolean success) {
+                                                            if (!success) {
+                                                                Log.d(TAG, "onComplete: failed to remove notify follow");
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
             }
         });
 
-        options.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {//if click on options go to options activity
-                startActivity(new Intent(getContext(), OptionsActivity.class));
-            }
-        });
+        //if click on options go to options activity
+        options.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.action_profileFragment_to_optionsFragment));
 
+        //if click on photos can see the post that published
         my_photos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on photos can see the post that published
@@ -156,6 +225,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        //if click on saved can see the photos that saved
         saved_photos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on saved can see the photos that saved
@@ -164,88 +234,24 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        //safeArgs
+        ProfileFragmentDirections.ActionProfileFragmentToFollowersFragment action=ProfileFragmentDirections.actionProfileFragmentToFollowersFragment(profileid,"followers");
+        //if click on followers can see how follow-in follow activity
+        followers.setOnClickListener(Navigation.createNavigateOnClickListener(action));
 
-        followers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {//if click on followers can see how follow-in follow activity
-                Intent intent = new Intent(getContext(), FollowersActivity.class);
-                intent.putExtra("id", profileid);
-                intent.putExtra("title", "followers");
-                startActivity(intent);
-            }
-        });
+        //safeArgs2
+        ProfileFragmentDirections.ActionProfileFragmentToFollowersFragment action2=ProfileFragmentDirections.actionProfileFragmentToFollowersFragment(profileid,"following");
+        //if click on following can see the users that follow by the current user-in follow activity
+        following.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
 
-        following.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {//if click on following can see the users that follow by the current user-in follow activity
-                Intent intent = new Intent(getContext(), FollowersActivity.class);
-                intent.putExtra("id", profileid);
-                intent.putExtra("title", "following");
-                startActivity(intent);
-            }
-        });
 
         return view;
     }
 
-    //add notification about following
-    private void addNotification(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Notifications").child(profileid);
 
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("userid", firebaseUser.getUid());
-        hashMap.put("text", "started following you");
-        hashMap.put("postid", "");
-        hashMap.put("ispost", false);
 
-        reference.push().setValue(hashMap);
-    }
 
-    //get the user info for showing in profile
-    private void userInfo(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(profileid);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                if (getContext() == null){
-                    return;
-                }
-                User user = dataSnapshot.getValue(User.class);
 
-                Glide.with(getContext()).load(user.getImageurl()).into(image_profile);
-                username.setText(user.getUsername());
-                fullname.setText(user.getFullname());
-                bio.setText(user.getBio());
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    //check if following of other users
-    private void checkFollow(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Follow").child(firebaseUser.getUid()).child("following");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                if (dataSnapshot.child(profileid).exists()){
-                    edit_profile.setText("following");
-                } else{
-                    edit_profile.setText("follow");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     //get the followers and following count to show in profile
     private void getFollowers(){

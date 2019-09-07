@@ -51,6 +51,9 @@
         <action
             android:id="@+id/action_profileFragment_to_optionsFragment"
             app:destination="@id/optionsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_profileFragment"

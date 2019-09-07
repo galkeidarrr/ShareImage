@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.shareimage.Activities.StartActivity;
@@ -27,6 +28,7 @@ public class OptionsFragment extends Fragment {
 
     private static final String TAG = "OptionsFragment";
     TextView logout,settings;
+    ImageView closeBtn;
     Repository repository;
     public OptionsFragment() {
         // Required empty public constructor
@@ -45,13 +47,14 @@ public class OptionsFragment extends Fragment {
         //save the variables
         logout = view.findViewById(R.id.Options_logout);
         settings= view.findViewById(R.id.Options_settings);
+        closeBtn=view.findViewById(R.id.Options_close);
 
         //go to edit profile
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: go to edit profile");
-                Navigation.findNavController(view)
+                Navigation.findNavController(v)
                         .navigate(R.id.action_optionsFragment_to_editProfileFragment);
             }
         });
@@ -64,6 +67,14 @@ public class OptionsFragment extends Fragment {
                 repository.instance.logOut();
                 getActivity().startActivity(new Intent(getActivity(), StartActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            }
+        });
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v)
+                        .popBackStack(R.id.profileFragment,false);
             }
         });
 
