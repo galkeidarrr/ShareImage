@@ -14,6 +14,7 @@ public class UserModel {
 
     public List<String> follows;
     public List<String> followers;
+    public ArrayList<String> saves;
 
 
 
@@ -27,6 +28,7 @@ public class UserModel {
         this.bio = bio;
         follows=new ArrayList<>();
         followers=new ArrayList<>();
+        saves=new ArrayList<>();
 
     }
 
@@ -102,5 +104,13 @@ public class UserModel {
 
     public void setFollowers(List<String> followers) {
         this.followers = followers;
+    }
+
+    public ArrayList<String> getSaves() {
+        return saves;
+    }
+
+    public void setSaves(ArrayList<String> saves) {
+        this.saves = saves;
     }
 }

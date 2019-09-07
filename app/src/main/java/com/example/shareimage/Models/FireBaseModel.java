@@ -551,14 +551,14 @@ public class FireBaseModel {
         });
     }
 
-    public void addSave(final String postid, final Repository.GetNewLikeListener listener){
+    public void addSave(final String postid, final Repository.GetNewSaveListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
-        getPost(postid, new Repository.GetPostListener() {
+        getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
             @Override
-            public void onComplete(PostModel postModel) {
-                if(postModel!=null){
-                    postModel.saves.add(firebaseUser.getUid());
-                    db.collection("posts").document(postid).set(postModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            public void onComplete(UserModel userModel) {
+                if(userModel!=null){
+                    userModel.saves.add(postid);
+                    db.collection("users").document(firebaseUser.getUid()).set(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             listener.onComplete(task.isSuccessful());
@@ -567,16 +567,18 @@ public class FireBaseModel {
                 }
             }
         });
+
+
     }
 
     public void deleteSave(final String postid, final Repository.DeleteLikeListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
-        getPost(postid, new Repository.GetPostListener() {
+        getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
             @Override
-            public void onComplete(PostModel postModel) {
-                if(postModel!=null){
-                    postModel.saves.remove(firebaseUser.getUid());
-                    db.collection("posts").document(postid).set(postModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+            public void onComplete(UserModel userModel) {
+                if(userModel!=null){
+                    userModel.saves.remove(postid);
+                    db.collection("users").document(firebaseUser.getUid()).set(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             listener.onComplete(task.isSuccessful());
@@ -585,17 +587,18 @@ public class FireBaseModel {
                 }
             }
         });
+
     }
 
-    PostModel mP=null;
+    UserModel mP=null;
     public void isSaved(final String postid, final ImageView imageView, final Repository.GetisLikedListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
-        getPost(postid, new Repository.GetPostListener() {
+        getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
             @Override
-            public void onComplete(PostModel postModel) {
-                if(postModel!=null) {
-                    mP=postModel;
-                    if (mP.saves.contains(firebaseUser.getUid())) {
+            public void onComplete(UserModel userModel) {
+                if(userModel!=null) {
+                    mP=userModel;
+                    if (mP.saves.contains(postid)) {
                         imageView.setImageResource(R.drawable.ic_save_black);
                         imageView.setTag("saved");
                     } else {
@@ -607,6 +610,8 @@ public class FireBaseModel {
                 listener.onComplete(false);
             }
         });
+
+
     }
 
     public void addComment(final String comment,final String publisherid, final Repository.AddCommentListener listener){

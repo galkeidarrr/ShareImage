@@ -110,16 +110,40 @@ public class ProfileFragment extends Fragment {
 
         firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
 
+        mySaves=new ArrayList<>();
         repository.instance.getUser(profileid, new Repository.GetUserListener() {
             @Override
             public void onComplete(UserModel userModel) {
                 if(userModel!=null){
-                    
+                    Glide.with(getContext()).load(userModel.getImageUrl()).into(image_profile);
+                    username.setText(userModel.getUserName());
+                    fullname.setText(userModel.getFullName());
+                    bio.setText(userModel.getBio());
+                    //TODO: chack follows and followers true or need change
+                    followers.setText(userModel.followers.size());
+                    following.setText(userModel.follows.size());
                 }
             }
         });
-        getFollowers();
-        getNrPosts();
+        repository.instance.getAllPost(new Repository.GetAllPostsListener() {
+            @Override
+            public void onComplete(ArrayList<PostModel> data) {
+                int i=0;
+                postList.clear();
+                if(data!=null) {
+                    for (PostModel p : data) {
+                        if (p.getPublisher().equals(profileid)) {
+                            postList.add(p);
+                            i++;
+                        }
+                    }
+                }
+                posts.setText(""+i);
+                Collections.reverse(postList);
+                myPhotosAdapter.notifyDataSetChanged();
+            }
+        });
+
         myFotos();
         mySaves();
 
