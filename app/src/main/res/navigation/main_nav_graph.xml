@@ -76,7 +76,7 @@
         tools:layout="@layout/fragment_post" />
     <fragment
         android:id="@+id/followersFragment"
-        android:name="com.example.shareimage.FollowersFragment"
+        android:name="com.example.shareimage.Fragments.FollowersFragment"
         android:label="fragment_followers"
         tools:layout="@layout/fragment_followers" />
 
