@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_homeFragment_to_commentsFragment"
             app:destination="@id/commentsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_postFragment"
+            app:destination="@id/postFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_homeFragment"
@@ -35,7 +38,11 @@
         android:id="@+id/profileFragment"
         android:name="com.example.shareimage.Fragments.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_profileFragment"
         app:destination="@id/profileFragment" />
@@ -64,9 +71,14 @@
     </fragment>
     <fragment
         android:id="@+id/postFragment"
-        android:name="com.example.shareimage.PostFragment"
+        android:name="com.example.shareimage.Fragments.PostFragment"
         android:label="fragment_post"
         tools:layout="@layout/fragment_post" />
+    <fragment
+        android:id="@+id/followersFragment"
+        android:name="com.example.shareimage.FollowersFragment"
+        android:label="fragment_followers"
+        tools:layout="@layout/fragment_followers" />
 
 
 </navigation>

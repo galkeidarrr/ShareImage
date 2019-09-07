@@ -200,8 +200,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                 editor.putString("postid", post.getPostId());
                 editor.apply();
 
-                //((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                 //       new PostDetailFragment()).commit();
+                Navigation.findNavController(view)
+                        .navigate(R.id.action_homeFragment_to_postFragment);
             }
         });
 /*
