@@ -551,6 +551,63 @@ public class FireBaseModel {
         });
     }
 
+    public void addSave(final String postid, final Repository.GetNewLikeListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        getPost(postid, new Repository.GetPostListener() {
+            @Override
+            public void onComplete(PostModel postModel) {
+                if(postModel!=null){
+                    postModel.saves.add(firebaseUser.getUid());
+                    db.collection("posts").document(postid).set(postModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            listener.onComplete(task.isSuccessful());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void deleteSave(final String postid, final Repository.DeleteLikeListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        getPost(postid, new Repository.GetPostListener() {
+            @Override
+            public void onComplete(PostModel postModel) {
+                if(postModel!=null){
+                    postModel.saves.remove(firebaseUser.getUid());
+                    db.collection("posts").document(postid).set(postModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            listener.onComplete(task.isSuccessful());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    PostModel mP=null;
+    public void isSaved(final String postid, final ImageView imageView, final Repository.GetisLikedListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        getPost(postid, new Repository.GetPostListener() {
+            @Override
+            public void onComplete(PostModel postModel) {
+                if(postModel!=null) {
+                    mP=postModel;
+                    if (mP.saves.contains(firebaseUser.getUid())) {
+                        imageView.setImageResource(R.drawable.ic_save_black);
+                        imageView.setTag("saved");
+                    } else {
+                        imageView.setImageResource(R.drawable.ic_savee_black);
+                        imageView.setTag("save");
+                    }
+                    listener.onComplete(true);
+                }
+                listener.onComplete(false);
+            }
+        });
+    }
 
     public void addComment(final String comment,final String publisherid, final Repository.AddCommentListener listener){
 

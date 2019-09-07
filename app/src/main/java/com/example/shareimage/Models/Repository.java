@@ -143,6 +143,17 @@ public class Repository {//singleton model to manage all the information (sqlite
         fireBaseModel.isLiked(postid,imageView,listener);
     }
 
+    public void addSave(final String postid, GetNewLikeListener listener){
+        fireBaseModel.addSave(postid,listener);
+    }
+
+    public void deleteSave(final String postid, DeleteLikeListener listener){
+        fireBaseModel.deleteSave(postid,listener);
+    }
+
+    public void isSaved(final String postid, final ImageView imageView, GetisLikedListener listener){
+        fireBaseModel.isSaved(postid,imageView,listener);
+    }
 
     public interface GetNewLikeListener {
         void onComplete(boolean success);

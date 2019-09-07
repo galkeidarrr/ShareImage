@@ -11,7 +11,7 @@ public class PostModel {
 
 
     public List<String> likes;
-    public List<CommentModel> comments;
+    public List<String> saves;
 
     public PostModel(String postId, String postImage, String description, String publisher) {
         this.postId = postId;
@@ -20,7 +20,7 @@ public class PostModel {
         this.publisher = publisher;
 
         likes=new ArrayList<>();
-        comments=new ArrayList<>();
+        saves=new ArrayList<>();
     }
 
     public PostModel() {
@@ -65,11 +65,12 @@ public class PostModel {
         this.likes = likes;
     }
 
-    public List<CommentModel> getComments() {
-        return comments;
+    public List<String> getSaves() {
+        return saves;
     }
 
-    public void setComments(List<CommentModel> comments) {
-        this.comments = comments;
+    public void setSaves(List<String> saves) {
+        this.saves = saves;
     }
+
 }

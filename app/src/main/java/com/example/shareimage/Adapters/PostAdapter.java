@@ -89,9 +89,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
         nrLikes(holder.likes,post.getPostId());
-
-
-        //isSaved(post.getPostId(), holder.save);
+        repository.instance.isSaved(post.getPostId(), holder.save, new Repository.GetisLikedListener() {
+            @Override
+            public void onComplete(boolean success) {
+                Log.d(TAG, "onComplete: save button is change if saved");
+            }
+        });
 
 
 
@@ -139,20 +142,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                 }
             }
         });
-/*
+
         holder.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on save
                 if (holder.save.getTag().equals("save")){
-                    FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid())
-                            .child(post.getPostid()).setValue(true);
+                    repository.instance.addSave(post.getPostId(), new Repository.GetNewLikeListener() {
+                        @Override
+                        public void onComplete(boolean success) {
+                            holder.save.setImageResource(R.drawable.ic_save_black);
+                            holder.save.setTag("saved");
+                        }
+                    });
                 } else {
-                    FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid())
-                            .child(post.getPostid()).removeValue();
+                    repository.instance.deleteLike(post.getPostId(), new Repository.DeleteLikeListener() {
+                        @Override
+                        public void onComplete(boolean success) {
+                            holder.save.setImageResource(R.drawable.ic_savee_black);
+                            holder.save.setTag("save");
+                        }
+                    });
                 }
             }
         });
-*/
+
         holder.image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on image profile go to publisher profile
@@ -327,33 +340,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
     }
 
 
-   /*
-    //for setting the button of saved
-    private void isSaved(final String postid, final ImageView imageView){
 
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Saves").child(firebaseUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                if (dataSnapshot.child(postid).exists()){//if save
-                    imageView.setImageResource(R.drawable.ic_save_black);
-                    imageView.setTag("saved");
-                } else{//if unsave
-                    imageView.setImageResource(R.drawable.ic_savee_black);
-                    imageView.setTag("save");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-*/
     //for more if the current user want to edit the post
     private void editPost(final String postid){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
