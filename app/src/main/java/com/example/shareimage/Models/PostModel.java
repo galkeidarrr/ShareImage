@@ -1,5 +1,6 @@
 package com.example.shareimage.Models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostModel {
@@ -17,6 +18,9 @@ public class PostModel {
         this.postImage = postImage;
         this.description = description;
         this.publisher = publisher;
+
+        likes=new ArrayList<>();
+        comments=new ArrayList<>();
     }
 
     public PostModel() {

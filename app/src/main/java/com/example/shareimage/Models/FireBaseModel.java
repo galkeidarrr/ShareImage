@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -220,8 +222,6 @@ public class FireBaseModel {
     }
 
 
-
-
     public void saveImage(Bitmap imageBitmap, final Repository.SaveImageListener listener) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         // Create a storage reference from our app
@@ -311,20 +311,31 @@ public class FireBaseModel {
 
     public void addLikeNotification(String userId,String postId,final Repository.GetNotifiListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
-        NotificationModel notificationModel=new NotificationModel(firebaseUser.getUid(),"liked your post",postId,false);
-        db.collection("Notifications").document(userId).set(notificationModel)
+        String newPostId=postId.replace("cropped","");
+        NotificationModel notificationModel=new NotificationModel(firebaseUser.getUid(),userId,"liked your post",postId,true);
+        db.collection("Notifications").document(newPostId).set(notificationModel)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         listener.onComplete(task.isSuccessful());
                     }
                 });
+    }
+
+    public void removeLikeNotification(String userId, String postId, final Repository.GetNotifiListener listener){
+        String newPostId=postId.replace("cropped","");
+        db.collection("Notifications").document(newPostId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete(task.isSuccessful());
+            }
+        });
 
     }
 
     public void addFollowNotification(String userId,final Repository.GetNotifiListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
-        NotificationModel notificationModel=new NotificationModel(firebaseUser.getUid(),"started following you","",false);
+        NotificationModel notificationModel=new NotificationModel(firebaseUser.getUid(),userId,"started following you","",false);
         db.collection("Notifications").document(userId).set(notificationModel)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -332,7 +343,15 @@ public class FireBaseModel {
                         listener.onComplete(task.isSuccessful());
                     }
                 });
+    }
 
+    public void removeFollowNotification(String userId,final Repository.GetNotifiListener listener){
+        db.collection("Notifications").document(userId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete(task.isSuccessful());
+            }
+        });
     }
 
     public void addFollow(UserModel userModel1, UserModel userModel2, final Repository.GetNewFollowListener listener){
@@ -354,6 +373,7 @@ public class FireBaseModel {
                 });
 
     }
+
     public void deleteFollow(UserModel userModel1, UserModel userModel2,final Repository.DeleteFollowListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
         userModel1.getFollows().remove(userModel2.getId());
@@ -372,6 +392,7 @@ public class FireBaseModel {
                     }
                 });
     }
+
     UserModel mUser=null;
     public void isFollowing(final String userid, final Button button, final Repository.GetisFollowListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
@@ -391,27 +412,6 @@ public class FireBaseModel {
             }
         });
         listener.onComplete(false);
-        /*
-        firebaseUser = getAuthInstance().getCurrentUser();
-        db.collection("Following").document(firebaseAuth.getUid());
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child("Follow").child(firebaseUser.getUid()).child("following");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(userid).exists()){
-                    button.setText("following");
-                } else{
-                    button.setText("follow");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        */
     }
 
     public void searchUsers(String s, Repository.GetSearchUsersListener listener){
@@ -446,22 +446,101 @@ public class FireBaseModel {
 
 
     public void getAllPost(final Repository.GetAllPostsListener listener){
-        db.collection("posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                ArrayList<PostModel> data = new ArrayList<>();
-                if (e != null) {
-                    listener.onComplete(data);
-                    return;
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    ArrayList<PostModel> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        PostModel post= document.toObject(PostModel.class);
+                        list.add(post);
+                    }
+                    listener.onComplete(list);
+                    Log.d(TAG, list.toString());
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
                 }
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    PostModel post= doc.toObject(PostModel.class);
-                    data.add(post);
-                }
-                listener.onComplete(data);
+                listener.onComplete(null);
             }
         });
 
+
+
+
+    }
+
+    public void getPost(final String postid,final Repository.GetPostListener listener){
+        db.collection("posts").document(postid).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot snapshot = task.getResult();
+                            PostModel postModel = snapshot.toObject(PostModel.class);
+                            listener.onComplete(postModel);
+                            return;
+                        }
+                        listener.onComplete(null);
+                    }
+                });
+    }
+
+    public void addLike(final String postid, final Repository.GetNewLikeListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        getPost(postid, new Repository.GetPostListener() {
+            @Override
+            public void onComplete(PostModel postModel) {
+                if(postModel!=null){
+                    postModel.likes.add(firebaseUser.getUid());
+                    db.collection("posts").document(postid).set(postModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            listener.onComplete(task.isSuccessful());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void deleteLike(final String postid, final Repository.DeleteLikeListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        getPost(postid, new Repository.GetPostListener() {
+            @Override
+            public void onComplete(PostModel postModel) {
+                if(postModel!=null){
+                    postModel.likes.remove(firebaseUser.getUid());
+                    db.collection("posts").document(postid).set(postModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            listener.onComplete(task.isSuccessful());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    PostModel mPost=null;
+    public void isLiked(final String postid, final ImageView imageView, final Repository.GetisLikedListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        getPost(postid, new Repository.GetPostListener() {
+            @Override
+            public void onComplete(PostModel postModel) {
+                if(postModel!=null) {
+                    mPost=postModel;
+                    if (mPost.likes.contains(firebaseUser.getUid())) {
+                        imageView.setImageResource(R.drawable.ic_liked);
+                        imageView.setTag("liked");
+                    } else {
+                        imageView.setImageResource(R.drawable.ic_like);
+                        imageView.setTag("like");
+                    }
+                    listener.onComplete(true);
+                }
+                listener.onComplete(false);
+            }
+        });
     }
 
 }

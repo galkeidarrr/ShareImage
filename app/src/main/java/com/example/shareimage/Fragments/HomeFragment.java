@@ -80,11 +80,12 @@ public class HomeFragment extends Fragment {
     }
     private void checkFollowing(){
 
+        //TODO: do its better
+        //read post of followers posts
         repository.instance.getUser(repository.instance.getAuthInstance().getCurrentUser().getUid().toString(), new Repository.GetUserListener() {
             @Override
             public void onComplete(UserModel userModel) {
                 if(userModel!=null){
-                    //read post of followers posts
                     repository.instance.getAllPost(new Repository.GetAllPostsListener() {
                         @Override
                         public void onComplete(ArrayList<PostModel> data) {
@@ -96,13 +97,14 @@ public class HomeFragment extends Fragment {
                                         }
                                     }
                                 }
+                                postAdapter.setmPosts(postList);
+                                recyclerView.setAdapter(postAdapter);
 
-                                postAdapter.notifyDataSetChanged();
-                                if (postList.isEmpty()){
-                                    progress_circular.setVisibility(View.VISIBLE);
-                                }else {
-                                    progress_circular.setVisibility(View.GONE);
-                                }
+                            }
+                            if (postList.isEmpty()){
+                                progress_circular.setVisibility(View.VISIBLE);
+                            }else {
+                                progress_circular.setVisibility(View.GONE);
                             }
                         }
                     });

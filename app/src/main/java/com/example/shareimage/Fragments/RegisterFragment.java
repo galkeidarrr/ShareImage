@@ -106,8 +106,8 @@ public class RegisterFragment extends Fragment {
             if (TextUtils.isEmpty(str_userName) || TextUtils.isEmpty(str_fullName) || TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)){
                 Toast.makeText(getActivity(), "All fields are required!", Toast.LENGTH_SHORT).show();
             } else //everything is ok
-                if(str_password.length() < 9){//the password length in less then 9
-                    Toast.makeText(getActivity(), "Password must have 9 characters!", Toast.LENGTH_SHORT).show();
+                if(str_password.length() < 6){//the password length in less then 6
+                    Toast.makeText(getActivity(), "Password must have 6 characters!", Toast.LENGTH_SHORT).show();
                 } else
                     repository.instance.register(new UserModel("",str_email, str_password, str_userName, str_fullName, str_userImage, ""), mImageUri, new Repository.AddUserListener() {
                         @Override

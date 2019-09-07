@@ -123,11 +123,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                                             repository.instance.addFollow(userModel1[0], userModel1[1], new Repository.GetNewFollowListener() {
                                                 @Override
                                                 public void onComplete(boolean success) {
-                                                    repository.instance.addFollowNotification(firebaseUser.getUid(), new Repository.GetNotifiListener() {
+                                                    repository.instance.addFollowNotification(userModel1[0].getId(), new Repository.GetNotifiListener() {
                                                         @Override
                                                         public void onComplete(boolean success) {
                                                             if (!success) {
-                                                                Log.d(TAG, "onComplete: faild to add follow");
+                                                                Log.d(TAG, "onComplete: failed to add follow");
                                                             }
                                                         }
                                                     });
@@ -155,9 +155,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                                             repository.instance.deleteFollow(userModel1[0], userModel1[1], new Repository.DeleteFollowListener() {
                                                 @Override
                                                 public void onComplete(boolean success) {
-                                                    if (!success) {
-                                                        Log.d(TAG, "onComplete: faild to remove follow");
-                                                    }
+                                                    repository.instance.removeFollowNotification(userModel1[0].getId(), new Repository.GetNotifiListener() {
+                                                        @Override
+                                                        public void onComplete(boolean success) {
+                                                            if (!success) {
+                                                                Log.d(TAG, "onComplete: failed to remove notify follow");
+                                                            }
+                                                        }
+                                                    });
                                                 }
                                             });
                                         }

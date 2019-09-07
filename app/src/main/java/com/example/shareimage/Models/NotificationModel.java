@@ -1,22 +1,24 @@
 package com.example.shareimage.Models;
 
 public class NotificationModel {
-    private String userId;
+    private String userIdFrom;
+    private String userIdTo;
     private String text;
     private String postId;
     private boolean isPost;
 
-    public NotificationModel(String userId, String text, String postId, boolean isPost){
-        this.userId=userId;
+    public NotificationModel(String userIdFrom,String userIdTo, String text, String postId, boolean isPost){
+        this.userIdFrom =userIdFrom;
+        this.userIdTo=userIdTo;
         this.text=text;
         this.postId=postId;
         this.isPost=isPost;
     }
     public NotificationModel(){}
 
-    public String getUserId() { return userId; }
+    public String getUserIdFrom() { return userIdFrom; }
 
-    public void setUserId(String userId) { this.userId = userId; }
+    public void setUserIdFrom(String userIdFrom) { this.userIdFrom = userIdFrom; }
 
     public String getText() { return text; }
 
@@ -29,4 +31,12 @@ public class NotificationModel {
     public boolean getIsPost() { return isPost; }
 
     public void setIsPost(boolean isPost) { this.isPost = isPost; }
+    public String getUserIdTo() {
+        return userIdTo;
+    }
+
+    public void setUserIdTo(String userIdTo) {
+        this.userIdTo = userIdTo;
+    }
+
 }

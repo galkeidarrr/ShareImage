@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.shareimage.ViewModels.MyApplication;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,6 +70,15 @@ public class Repository {//singleton model to manage all the information (sqlite
     public void addFollowNotification(String userId, GetNotifiListener listener){
         fireBaseModel.addFollowNotification(userId,listener);
     }
+
+    public void removeLikeNotification(String userId,String postId,GetNotifiListener listener){
+        fireBaseModel.removeLikeNotification(userId,postId,listener);
+    }
+
+    public void removeFollowNotification(String userId,GetNotifiListener listener){
+        fireBaseModel.removeFollowNotification(userId,listener);
+    }
+
     public interface GetNewFollowListener {
         void onComplete(boolean success);
     }
@@ -112,6 +122,35 @@ public class Repository {//singleton model to manage all the information (sqlite
     }
     public void getAllPost(final GetAllPostsListener listener){
         fireBaseModel.getAllPost(listener);
+    }
+    public interface GetPostListener{
+        void onComplete(PostModel postModel);
+    }
+    public void getPost(final String postid,GetPostListener listener){
+        fireBaseModel.getPost(postid,listener);
+    }
+
+    public interface GetisLikedListener {
+        void onComplete(boolean success);
+    }
+    public void isLiked(final String postid, final ImageView imageView,GetisLikedListener listener){
+        fireBaseModel.isLiked(postid,imageView,listener);
+    }
+
+
+    public interface GetNewLikeListener {
+        void onComplete(boolean success);
+    }
+    public void addLike(final String postid,GetNewLikeListener listener){
+        fireBaseModel.addLike(postid,listener);
+    }
+
+    public interface DeleteLikeListener {
+        void onComplete(boolean success);
+    }
+
+    public  void deleteLike(final String postid,DeleteLikeListener listener){
+        fireBaseModel.deleteLike(postid,listener);
     }
 
 }
