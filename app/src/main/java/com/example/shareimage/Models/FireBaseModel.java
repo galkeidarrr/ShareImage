@@ -559,6 +559,16 @@ public class FireBaseModel {
             }
         });
     }
+
+    public void deleteComment(final String commentId, final Repository.DeleteCommentListener listener){
+        db.collection("comments").document(commentId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete(task.isSuccessful());
+            }
+        });
+    }
+
     String commentL;
     public void addCommentNotification(String commentId,String publisherid,String comment,String postId,final Repository.GetNotifiListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
@@ -583,21 +593,21 @@ public class FireBaseModel {
     }
 
     public void getAllComments(final Repository.GetAllCommentsListener listener){
-        db.collection("comments").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    ArrayList<CommentModel> list = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        CommentModel comment= document.toObject(CommentModel.class);
-                        list.add(comment);
-                    }
-                    listener.onComplete(list);
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                ArrayList<CommentModel> data = new ArrayList<>();
+                if (e != null) {
+                    listener.onComplete(data);
+                    return;
                 }
-                listener.onComplete(null);
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    CommentModel commentModel= doc.toObject(CommentModel.class);
+                    data.add(commentModel);
+                }
+                listener.onComplete(data);
             }
         });
+
     }
 }

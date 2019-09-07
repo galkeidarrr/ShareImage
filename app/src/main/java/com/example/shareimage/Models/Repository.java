@@ -158,6 +158,12 @@ public class Repository {//singleton model to manage all the information (sqlite
     public void addComment(final String comment,final String publisherid,AddCommentListener listener){
         fireBaseModel.addComment(comment,publisherid,listener);
     }
+    public interface DeleteCommentListener {
+        void onComplete(boolean success);
+    }
+    public void deleteComment(final String commentId,DeleteCommentListener listener){
+        fireBaseModel.deleteComment(commentId,listener);
+    }
 
     public void addCommentNotification(String commentId,String publisherid,String comment,String postId,GetNotifiListener listener){
         fireBaseModel.addCommentNotification(commentId,publisherid,comment,postId,listener);
