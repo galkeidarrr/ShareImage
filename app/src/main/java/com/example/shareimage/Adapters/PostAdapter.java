@@ -144,7 +144,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             @Override
             public void onClick(View view) {//if click on save
                 if (holder.save.getTag().equals("save")){
-                    repository.instance.addSave(post.getPostId(), new Repository.GetNewLikeListener() {
+                    repository.instance.addSave(post.getPostId(), new Repository.GetNewSaveListener() {
                         @Override
                         public void onComplete(boolean success) {
                             holder.save.setImageResource(R.drawable.ic_save_black);
@@ -152,7 +152,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                         }
                     });
                 } else {
-                    repository.instance.deleteLike(post.getPostId(), new Repository.DeleteLikeListener() {
+                    repository.instance.deleteSave(post.getPostId(), new Repository.DeleteLikeListener() {
                         @Override
                         public void onComplete(boolean success) {
                             holder.save.setImageResource(R.drawable.ic_savee_black);

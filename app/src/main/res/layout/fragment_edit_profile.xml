@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".Activities.EditProfileActivity">
+    tools:context=".Fragments.EditProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/bar"
+        android:id="@+id/edit_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground">

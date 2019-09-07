@@ -119,9 +119,9 @@ public class ProfileFragment extends Fragment {
                     username.setText(userModel.getUserName());
                     fullname.setText(userModel.getFullName());
                     bio.setText(userModel.getBio());
-                    //TODO: chack follows and followers true or need change
-                    followers.setText(userModel.followers.size());
-                    following.setText(userModel.follows.size());
+                    followers.setText(userModel.follows.size());
+                    following.setText(userModel.followers.size());
+                    mySaves=userModel.saves;
                 }
             }
         });
@@ -130,22 +130,27 @@ public class ProfileFragment extends Fragment {
             public void onComplete(ArrayList<PostModel> data) {
                 int i=0;
                 postList.clear();
+                postList_saves.clear();
                 if(data!=null) {
                     for (PostModel p : data) {
                         if (p.getPublisher().equals(profileid)) {
                             postList.add(p);
                             i++;
                         }
+                        for (String id : mySaves) {//get from the keys the posts
+                            if (p.getPostId().equals(id)) {
+                                postList_saves.add(p);
+                            }
+                        }
                     }
                 }
                 posts.setText(""+i);
                 Collections.reverse(postList);
                 myPhotosAdapter.notifyDataSetChanged();
+                myPhotosAdapter_saves.notifyDataSetChanged();
             }
         });
 
-        //myFotos();
-        //mySaves();
 
         if (profileid.equals(firebaseUser.getUid())){//if the current user want to edit profile
             edit_profile.setText("Edit Profile");
@@ -273,132 +278,5 @@ public class ProfileFragment extends Fragment {
     }
 
 
-
-
-/*
-
-    //get the followers and following count to show in profile
-    private void getFollowers(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Follow").child(profileid).child("followers");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                followers.setText(""+dataSnapshot.getChildrenCount());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("Follow").child(profileid).child("following");
-        reference1.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                following.setText(""+dataSnapshot.getChildrenCount());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    //get the post count of current user to show in profile
-    private void getNrPosts(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                int i = 0;
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Post post = snapshot.getValue(Post.class);
-                    if (post.getPublisher().equals(profileid)){
-                        i++;
-                    }
-                }
-                posts.setText(""+i);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    //get the images that the current user posts to show in photos
-    private void myFotos(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                postList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){//get all posts
-                    Post post = snapshot.getValue(Post.class);
-                    if (post.getPublisher().equals(profileid)){
-                        postList.add(post);
-                    }
-                }
-                Collections.reverse(postList);
-                myFotosAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    //get the images that the current user save to show in saves
-    private void mySaves(){
-        mySaves = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Saves").child(firebaseUser.getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){//get all keys posts that saved
-                    mySaves.add(snapshot.getKey());
-                }
-                readSaves();//function that read all the saves
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    //for showing all the save need to read them first
-    private void readSaves(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                postList_saves.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){//get all the posts that saved by the current user
-                    Post post = snapshot.getValue(Post.class);
-
-                    for (String id : mySaves) {//get from the keys the posts
-                        if (post.getPostid().equals(id)) {
-                            postList_saves.add(post);
-                        }
-                    }
-                }
-                myFotosAdapter_saves.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    */
 }
 
