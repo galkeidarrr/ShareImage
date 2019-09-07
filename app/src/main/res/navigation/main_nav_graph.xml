@@ -62,6 +62,11 @@
             android:name="publisherId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="com.example.shareimage.PostFragment"
+        android:label="fragment_post"
+        tools:layout="@layout/fragment_post" />
 
 
 </navigation>

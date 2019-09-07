@@ -104,7 +104,7 @@ public class CommentsFragment extends Fragment {
                     Log.d(TAG, "onClick: the user try post empty message");
                     Toast.makeText(getActivity(), "You can't send empty message", Toast.LENGTH_SHORT).show();
                 }else {
-                    repository.instance.addComment(commentLefted, publisherid, new Repository.AddCommentListener() {
+                    repository.instance.addComment(commentLefted, firebaseUser.getUid(), new Repository.AddCommentListener() {
 
                         @Override
                         public void onComplete(String commentid) {

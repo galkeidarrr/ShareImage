@@ -3,7 +3,6 @@ package com.example.shareimage.Adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +18,10 @@ import com.example.shareimage.Models.CommentModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ImageViewHolder>{
 
@@ -65,6 +62,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ImageVi
                 holder.username.setText(userModel.getUserName());
             }
         });
+        //TODO: in the note down
 /*
         holder.username.setOnClickListener(new View.OnClickListener() {
             @Override

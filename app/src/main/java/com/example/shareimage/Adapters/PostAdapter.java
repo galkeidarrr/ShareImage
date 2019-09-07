@@ -2,14 +2,17 @@ package com.example.shareimage.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavAction;
 import androidx.navigation.NavDirections;
@@ -27,6 +30,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolder>{
     private static final String TAG = "PostAdapter";
@@ -82,8 +87,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
 
 
         //isSaved(post.getPostId(), holder.save);
-        //nrLikes(holder.likes, post.getPostId());
-        //getCommetns(post.getPostId(), holder.comments);
+
+
 
 
         holder.like.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +147,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                 }
             }
         });
-
+*/
         holder.image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on image profile go to publisher profile
@@ -150,8 +155,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                 editor.putString("profileid", post.getPublisher());
                 editor.apply();
 
-                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ProfileFragment()).commit();
+                Navigation.findNavController(view)
+                        .navigate(R.id.action_global_profileFragment);
             }
         });
 
@@ -162,8 +167,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                 editor.putString("profileid", post.getPublisher());
                 editor.apply();
 
-                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ProfileFragment()).commit();
+                Navigation.findNavController(view)
+                        .navigate(R.id.action_global_profileFragment);
             }
         });
 
@@ -174,32 +179,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                 editor.putString("profileid", post.getPublisher());
                 editor.apply();
 
-                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ProfileFragment()).commit();
+                Navigation.findNavController(view)
+                        .navigate(R.id.action_global_profileFragment);
             }
         });
 
-*/
-//safeArgs
+
+        //safeArgs
         HomeFragmentDirections.ActionHomeFragmentToCommentsFragment action=HomeFragmentDirections.actionHomeFragmentToCommentsFragment(post.getPostId(),post.getPublisher());
 
         //if click on comment go to comment activity- for left comment
         holder.comment.setOnClickListener(Navigation.createNavigateOnClickListener(action));
         //if click on comments go to comments activity -to see all the comments
         holder.comments.setOnClickListener(Navigation.createNavigateOnClickListener(action));
-/*
+
         holder.post_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on post image go to post detail fragment to see the post
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
-                editor.putString("postid", post.getPostid());
+                editor.putString("postid", post.getPostId());
                 editor.apply();
 
-                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new PostDetailFragment()).commit();
+                //((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                 //       new PostDetailFragment()).commit();
             }
         });
-
+/*
         holder.likes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on likes go to followers activity to see all the followers that liked
@@ -295,24 +300,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
     }
-    /*
 
-    //for showing who many comment of the specific post
-    private void getCommetns(String postId, final TextView comments){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Comments").child(postId);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                comments.setText("View All "+dataSnapshot.getChildrenCount()+" Comments");//comments count
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-    */
 
     //get the details of the publisher
     private void publisherInfo(final ImageView image_profile, final TextView username, final TextView publisher, final String userid){
@@ -331,9 +319,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
     }
 
 
-    //for setting the button of likes
-    //private void isLiked(final String postid, final ImageView imageView){ }
-    /*
+   /*
     //for setting the button of saved
     private void isSaved(final String postid, final ImageView imageView){
 
