@@ -49,6 +49,9 @@ public class Repository {//singleton model to manage all the information (sqlite
     public void login(String email, String password,LoginUserListener l){
         fireBaseModel.login(email,password,l);
     }
+    public void logOut(){
+        fireBaseModel.logOut();
+    }
     public interface SaveImageListener{
         void onComplete(String url);
     }

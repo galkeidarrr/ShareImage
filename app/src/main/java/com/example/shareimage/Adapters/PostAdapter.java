@@ -94,7 +94,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
 
 
 
-
+        //if click on like
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on like
@@ -139,6 +139,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
 
+        //if click on save
         holder.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on save
@@ -162,6 +163,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
 
+        //if click on image profile go to publisher profile
         holder.image_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on image profile go to publisher profile
@@ -174,6 +176,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
 
+        //if click on user name go to publisher profile
         holder.username.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on user name go to publisher profile
@@ -186,6 +189,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
 
+        //if click on publisher comment go to publisher profile
         holder.publisher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on publisher comment go to publisher profile
@@ -207,6 +211,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
         //if click on comments go to comments activity -to see all the comments
         holder.comments.setOnClickListener(Navigation.createNavigateOnClickListener(action));
 
+        //if click on post image go to post detail fragment to see the post
         holder.post_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click on post image go to post detail fragment to see the post
@@ -221,13 +226,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
 
 
         //safeArgs
-
         HomeFragmentDirections.ActionHomeFragmentToFollowersFragment action1=HomeFragmentDirections.actionHomeFragmentToFollowersFragment(post.getPostId(),"likes");
-        //if click on comment go to comment activity- for left comment
+        //if click on likes go to followers activity to see all the followers that liked
         holder.likes.setOnClickListener(Navigation.createNavigateOnClickListener(action1));
 
 
-
+        //if click more go to manu to chose if edit or remove
         holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click more go to manu to chose if edit or remove
