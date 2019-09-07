@@ -10,7 +10,11 @@
         android:id="@+id/homeFragment"
         android:name="com.example.shareimage.Fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_commentsFragment"
+            app:destination="@id/commentsFragment" />
+    </fragment>
     <action android:id="@+id/action_global_homeFragment2" app:destination="@id/homeFragment" />
     <fragment
         android:id="@+id/searchFragment"
@@ -35,4 +39,9 @@
         android:name="com.example.shareimage.Fragments.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" /><action android:id="@+id/action_global_notificationFragment" app:destination="@id/notificationFragment"/>
+    <fragment
+        android:id="@+id/commentsFragment"
+        android:name="com.example.shareimage.CommentsFragment"
+        android:label="fragment_comments"
+        tools:layout="@layout/fragment_comments" />
 </navigation>
