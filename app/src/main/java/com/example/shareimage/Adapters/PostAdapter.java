@@ -1,6 +1,7 @@
 package com.example.shareimage.Adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -8,10 +9,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavAction;
@@ -213,7 +218,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
         holder.likes.setOnClickListener(Navigation.createNavigateOnClickListener(action1));
 
 
-/*
+
         holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//if click more go to manu to chose if edit or remove
@@ -223,31 +228,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()){
                             case R.id.edit://edit and go to profile
-                                editPost(post.getPostid());
-                                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                        new ProfileFragment()).commit();
+                                editPost(post.getPostId());
+                                Navigation.findNavController(view)
+                                        .navigate(R.id.action_global_profileFragment);
                                 return true;
                             case R.id.delete://delete and go to profile
-                                final String id = post.getPostid();
-                                FirebaseDatabase.getInstance().getReference("Posts")
-                                        .child(post.getPostid()).removeValue()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()){
-                                                    deleteNotifications(id, firebaseUser.getUid());
+                                final String id = post.getPostId();
+                                repository.instance.deletePost(id, new Repository.DeletePostListener() {
+                                    @Override
+                                    public void onComplete(boolean success) {
+                                        if(success){
+                                            repository.instance.removeLikeNotification(id, firebaseUser.getUid(), new Repository.GetNotifiListener() {
+                                                @Override
+                                                public void onComplete(boolean success) {
+                                                    if(success){
+                                                        Toast.makeText(mContext, "Deleted!", Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
-                                            }
-                                        });
-                                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                                        new ProfileFragment()).commit();
+                                            });
+                                        }
+                                    }
+                                });
+                                Navigation.findNavController(view)
+                                        .navigate(R.id.action_global_profileFragment);
                                 return true;
                             default:
                                 return false;
                         }
                     }
                 });
-                popupMenu.inflate(R.menu.post_menu);
+                popupMenu.inflate(R.menu.post_setting_menu);
                 if (!post.getPublisher().equals(firebaseUser.getUid())){
                     popupMenu.getMenu().findItem(R.id.edit).setVisible(false);
                     popupMenu.getMenu().findItem(R.id.delete).setVisible(false);
@@ -255,7 +265,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
                 popupMenu.show();
             }
         });
-*/
+
     }
 
     @Override
@@ -343,7 +353,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
     }
-
+*/
     //for more if the current user want to edit the post
     private void editPost(final String postid){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
@@ -357,17 +367,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
         alertDialog.setView(editText);
 
         getText(postid, editText);
-
+        String changes=editText.getText().toString();
         alertDialog.setPositiveButton("Edit",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("description", editText.getText().toString());
-
-                        FirebaseDatabase.getInstance().getReference("Posts")
-                                .child(postid).updateChildren(hashMap);
+                        repository.instance.editPost(postid, changes, new Repository.EditPostListener() {
+                            @Override
+                            public void onComplete(boolean success) {
+                                if(success){
+                                    Toast.makeText(mContext,"done!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
                 });
         alertDialog.setNegativeButton("Cancel",
@@ -382,19 +394,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
 
     //fer edit post get the text that already there
     private void getText(String postid, final EditText editText){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts")
-                .child(postid);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {//if something change
-                editText.setText(dataSnapshot.getValue(Post.class).getDescription());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+       repository.instance.getPost(postid, new Repository.GetPostListener() {
+           @Override
+           public void onComplete(PostModel postModel) {
+               if(postModel!=null){
+                   editText.setText(postModel.getDescription());
+               }
+           }
+       });
     }
-*/
 }

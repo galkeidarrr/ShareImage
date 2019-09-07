@@ -127,6 +127,15 @@ public class FireBaseModel {
 
     }
 
+    public void deletePost(final String postId,final Repository.DeletePostListener listener){
+        db.collection("posts").document(postId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                listener.onComplete(task.isSuccessful());
+            }
+        });
+    }
+
     public void uploadPost(PostModel post,Uri mImageUri){
         Log.d(TAG, "uploadPost: upload new post");
         storageRef = FirebaseStorage.getInstance().getReference("posts");
@@ -610,4 +619,24 @@ public class FireBaseModel {
         });
 
     }
+
+
+    public void editPost(final String postId, final String description, final Repository.EditPostListener listener){
+        getPost(postId, new Repository.GetPostListener() {
+            @Override
+            public void onComplete(PostModel postModel) {
+                if(postModel!=null){
+                    PostModel p=postModel;
+                    p.setDescription(description);
+                    db.collection("posts").document(postId).set(p).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            listener.onComplete(task.isSuccessful());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
 }

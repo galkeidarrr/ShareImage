@@ -116,6 +116,12 @@ public class Repository {//singleton model to manage all the information (sqlite
     public void addPost(final PostModel post, final Uri mImageUri, final Repository.AddPostListener l){
         fireBaseModel.addPost(post,mImageUri,l);
     }
+    public interface DeletePostListener {
+        void onComplete(boolean success);
+    }
+    public void deletePost(final String postId,DeletePostListener listener){
+        fireBaseModel.deletePost(postId,listener);
+    }
 
     public interface GetAllPostsListener{
         void onComplete(ArrayList<PostModel> data);
@@ -176,6 +182,12 @@ public class Repository {//singleton model to manage all the information (sqlite
     }
     public void getAllComments(GetAllCommentsListener listener){
         fireBaseModel.getAllComments(listener);
+    }
+    public interface EditPostListener {
+        void onComplete(boolean success);
+    }
+    public void editPost(final String postId,final String description,EditPostListener listener){
+        fireBaseModel.editPost(postId,description,listener);
     }
 
 }
