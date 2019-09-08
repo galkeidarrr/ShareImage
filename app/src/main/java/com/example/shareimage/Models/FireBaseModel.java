@@ -475,7 +475,7 @@ public class FireBaseModel {
 
 
     public void getAllPost(final Repository.GetAllPostsListener listener){
-
+/*
         db.collection("posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -491,7 +491,7 @@ public class FireBaseModel {
                 listener.onComplete(data);
             }
         });
-        /*
+        */
         db.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -509,7 +509,7 @@ public class FireBaseModel {
                 listener.onComplete(null);
             }
         });
-        */
+
 
     }
 
