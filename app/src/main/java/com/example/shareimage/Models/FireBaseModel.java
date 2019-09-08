@@ -186,7 +186,7 @@ public class FireBaseModel {
     }
 
     //Upload a profile picture and edit the user with the new one
-    private void uploadImage(Uri mImageUri,UserModel userModel){
+    public void uploadImage(Uri mImageUri,UserModel userModel){
         //Save a new folder in the storage of profile pictures
         Log.d(TAG, "uploadImage: Upload a profile picture and edit the user with the new one");
         storageRef = FirebaseStorage.getInstance().getReference("profileImage");
@@ -691,6 +691,28 @@ public class FireBaseModel {
                     PostModel p=postModel;
                     p.setDescription(description);
                     db.collection("posts").document(postId).set(p).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            listener.onComplete(task.isSuccessful());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    UserModel u;
+    public void updateProfile(final String fullName, final String userName, final String bio,final Repository.EditProfileListener listener){
+        firebaseUser=getAuthInstance().getCurrentUser();
+        getUser(firebaseUser.getUid(), new Repository.GetUserListener() {
+            @Override
+            public void onComplete(UserModel userModel) {
+                if (userModel!=null){
+                    u=userModel;
+                    u.setFullName(fullName);
+                    u.setUserName(userName);
+                    u.setBio(bio);
+                    db.collection("users").document(firebaseUser.getUid()).set(u).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             listener.onComplete(task.isSuccessful());
