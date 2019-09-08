@@ -55,6 +55,9 @@ public class SearchFragment extends Fragment {
         recyclerView=v.findViewById(R.id.search_recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        userList = new ArrayList<>();
+        userAdapter = new UserAdapter(getContext(), userList, true);
+        recyclerView.setAdapter(userAdapter);
 
         search_bar = v.findViewById(R.id.search_barET);
         repository.instance.getAllUsers(new Repository.GetAllUsersListener() {
@@ -69,7 +72,7 @@ public class SearchFragment extends Fragment {
             }
 
         });
-        Log.d(TAG, "onCreateView: "+userList);
+
 
 
         search_bar.addTextChangedListener(new TextWatcher() {//search
