@@ -170,6 +170,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             public void onClick(View view) {//if click on image profile go to publisher profile
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
                 editor.putString("profileid", post.getPublisher());
+                editor.putString("other", "true");
                 editor.apply();
 
                 Navigation.findNavController(view)
@@ -183,6 +184,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             public void onClick(View view) {//if click on user name go to publisher profile
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
                 editor.putString("profileid", post.getPublisher());
+                editor.putString("other", "true");
                 editor.apply();
 
                 Navigation.findNavController(view)
@@ -196,6 +198,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             public void onClick(View view) {//if click on publisher comment go to publisher profile
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
                 editor.putString("profileid", post.getPublisher());
+                editor.putString("other", "true");
                 editor.apply();
 
                 Navigation.findNavController(view)

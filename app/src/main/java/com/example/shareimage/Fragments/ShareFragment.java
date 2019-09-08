@@ -55,10 +55,7 @@ public class ShareFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_share, container, false);
-        firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
-        SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
-        editor.putString("profileid", firebaseUser.getUid());
-        editor.apply();
+        
         //save the variables
         close = view.findViewById(R.id.share_closeBtn);
         image_added = view.findViewById(R.id.share_image_added);

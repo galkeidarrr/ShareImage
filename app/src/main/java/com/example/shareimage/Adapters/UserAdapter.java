@@ -89,8 +89,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                 if (isFragment) {
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
                     editor.putString("profileid", user.getId());
+                    editor.putString("other", "true");
                     editor.apply();
-                    //TODO: check if visit another profile
                     Navigation.createNavigateOnClickListener(R.id.action_global_profileFragment);
 
                 } else {

@@ -52,10 +52,6 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_search, container, false);
 
-        firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
-        SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
-        editor.putString("profileid", firebaseUser.getUid());
-        editor.apply();
         recyclerView=v.findViewById(R.id.search_recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

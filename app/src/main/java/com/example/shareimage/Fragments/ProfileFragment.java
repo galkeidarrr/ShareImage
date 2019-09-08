@@ -76,8 +76,19 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_profile, container, false);
+
+        firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
         SharedPreferences prefs = getContext().getSharedPreferences("PREFS", MODE_PRIVATE);
-        profileid = prefs.getString("profileid", "none");
+        String profileCHK = prefs.getString("profileid", "none");
+        String chack=prefs.getString("other", "none");
+        if(!profileCHK.equals(firebaseUser.getUid()) && chack.equals("true")){
+            profileid=profileCHK;
+            SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+            editor.putString("other", "false");
+            editor.apply();
+        }else {
+            profileid=firebaseUser.getUid();
+        }
 
         //save the variables
         image_profile = view.findViewById(R.id.profile_image_profile);
