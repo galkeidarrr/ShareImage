@@ -212,9 +212,11 @@ public class ProfileFragment extends Fragment {
                                                     repository.instance.addFollowNotification(userModel1[0].getId(), new Repository.GetNotifiListener() {
                                                         @Override
                                                         public void onComplete(boolean success) {
-                                                            if (!success) {
-                                                                Log.d(TAG, "onComplete: failed to add follow");
+                                                            if (success) {
+                                                                edit_profile.setText("following");
+                                                                followers.setText(""+userModel1[0].follows.size());
                                                             }
+
                                                         }
                                                     });
                                                 }
@@ -243,9 +245,11 @@ public class ProfileFragment extends Fragment {
                                                     repository.instance.removeFollowNotification(userModel1[0].getId(), new Repository.GetNotifiListener() {
                                                         @Override
                                                         public void onComplete(boolean success) {
-                                                            if (!success) {
-                                                                Log.d(TAG, "onComplete: failed to remove notify follow");
+                                                            if (success) {
+                                                                edit_profile.setText("follow");
+                                                                followers.setText(""+userModel1[0].follows.size());
                                                             }
+
                                                         }
                                                     });
                                                 }
