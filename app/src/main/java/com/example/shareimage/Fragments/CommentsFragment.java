@@ -90,7 +90,7 @@ public class CommentsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(view)
-                        .popBackStack(R.id.homeFragment,false);
+                        .popBackStack();
             }
         });
 

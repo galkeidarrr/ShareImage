@@ -82,6 +82,14 @@ public class Repository {//singleton model to manage all the information (sqlite
         fireBaseModel.removeFollowNotification(userId,listener);
     }
 
+    public interface GetAllNotiListener{
+        void onComplete(ArrayList<NotificationModel> data);
+    }
+
+    public void getAllNotifications(GetAllNotiListener listener){
+        fireBaseModel.getAllNotifications(listener);
+    }
+
     public interface GetNewFollowListener {
         void onComplete(boolean success);
     }
@@ -216,6 +224,8 @@ public class Repository {//singleton model to manage all the information (sqlite
     public void uploadImage(Uri mImageUri,UserModel userModel){
         fireBaseModel.uploadImage(mImageUri,userModel);
     }
+
+
 
 }
 

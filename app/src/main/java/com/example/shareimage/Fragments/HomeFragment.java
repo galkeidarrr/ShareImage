@@ -61,6 +61,7 @@ public class HomeFragment extends Fragment {
         firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
         SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
         editor.putString("profileid", firebaseUser.getUid());
+        editor.putString("fragFrom","home");
         editor.apply();
 
         recyclerView = v.findViewById(R.id.home_recycler_view);

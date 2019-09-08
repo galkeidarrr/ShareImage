@@ -365,6 +365,24 @@ public class FireBaseModel {
         });
     }
 
+    public void getAllNotifications(final Repository.GetAllNotiListener listener){
+        db.collection("Notifications").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                ArrayList<NotificationModel> data = new ArrayList<>();
+                if (e != null) {
+                    listener.onComplete(data);
+                    return;
+                }
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    NotificationModel noti= doc.toObject(NotificationModel.class);
+                    data.add(noti);
+                }
+                listener.onComplete(data);
+            }
+        });
+    }
+
     public void addFollow(UserModel userModel1, UserModel userModel2, final Repository.GetNewFollowListener listener){
         firebaseUser=getAuthInstance().getCurrentUser();
         userModel1.getFollows().add(userModel2.getId());

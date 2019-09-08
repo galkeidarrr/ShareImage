@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.shareimage.Fragments.HomeFragmentDirections;
+import com.example.shareimage.Fragments.PostFragmentDirections;
 import com.example.shareimage.Models.PostModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
@@ -202,14 +203,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ImageViewHolde
             }
         });
 
-
         //safeArgs
-        HomeFragmentDirections.ActionHomeFragmentToCommentsFragment action=HomeFragmentDirections.actionHomeFragmentToCommentsFragment(post.getPostId(),post.getPublisher());
+        SharedPreferences prefs = mContext.getSharedPreferences("PREFS", MODE_PRIVATE);
+        String from = prefs.getString("fragFrom", "none");
+        if(from.equals("home")){
+            HomeFragmentDirections.ActionHomeFragmentToCommentsFragment action=HomeFragmentDirections.actionHomeFragmentToCommentsFragment(post.getPostId(),post.getPublisher());
+            //if click on comment go to comment activity- for left comment
+            holder.comment.setOnClickListener(Navigation.createNavigateOnClickListener(action));
+            //if click on comments go to comments activity -to see all the comments
+            holder.comments.setOnClickListener(Navigation.createNavigateOnClickListener(action));
+        }else{
+            PostFragmentDirections.ActionPostFragmentToCommentsFragment action2=PostFragmentDirections.actionPostFragmentToCommentsFragment(post.getPostId(),post.getPublisher());
+            //if click on comment go to comment activity- for left comment
+            holder.comment.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
+            //if click on comments go to comments activity -to see all the comments
+            holder.comments.setOnClickListener(Navigation.createNavigateOnClickListener(action2));
 
-        //if click on comment go to comment activity- for left comment
-        holder.comment.setOnClickListener(Navigation.createNavigateOnClickListener(action));
-        //if click on comments go to comments activity -to see all the comments
-        holder.comments.setOnClickListener(Navigation.createNavigateOnClickListener(action));
+        }
+
+
 
         //if click on post image go to post detail fragment to see the post
         holder.post_image.setOnClickListener(new View.OnClickListener() {
