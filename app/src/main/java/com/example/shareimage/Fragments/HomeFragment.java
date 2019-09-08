@@ -63,7 +63,7 @@ public class HomeFragment extends Fragment {
         editor.putString("profileid", firebaseUser.getUid());
         editor.apply();
 
-        recyclerView = v.findViewById(R.id.recycler_view);
+        recyclerView = v.findViewById(R.id.home_recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setReverseLayout(true);
