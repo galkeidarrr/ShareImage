@@ -475,6 +475,23 @@ public class FireBaseModel {
 
 
     public void getAllPost(final Repository.GetAllPostsListener listener){
+
+        db.collection("posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                ArrayList<PostModel> data = new ArrayList<>();
+                if (e != null) {
+                    listener.onComplete(data);
+                    return;
+                }
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    PostModel user= doc.toObject(PostModel.class);
+                    data.add(user);
+                }
+                listener.onComplete(data);
+            }
+        });
+        /*
         db.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -492,6 +509,7 @@ public class FireBaseModel {
                 listener.onComplete(null);
             }
         });
+        */
 
     }
 

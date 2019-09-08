@@ -76,6 +76,31 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         } else {
             holder.post_image.setVisibility(View.GONE);
         }
+        holder.image_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+                editor.putString("profileid", notification.getUserIdFrom());
+                editor.putString("other", "true");
+                editor.apply();
+
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_global_profileFragment);
+            }
+        });
+
+        holder.username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+                editor.putString("profileid", notification.getUserIdFrom());
+                editor.putString("other", "true");
+                editor.apply();
+
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_global_profileFragment);
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,11 +110,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     editor.putString("postid", notification.getPostId());
                     editor.apply();
 
-                    //Navigation.findNavController(view)
-                            //.navigate(R.id.);
+                    Navigation.findNavController(view)
+                            .navigate(R.id.action_notificationFragment_to_postFragment);
                 } else {//else go to the publisher profile
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", MODE_PRIVATE).edit();
                     editor.putString("profileid", notification.getUserIdFrom());
+                    editor.putString("other", "true");
                     editor.apply();
 
                     Navigation.findNavController(view)

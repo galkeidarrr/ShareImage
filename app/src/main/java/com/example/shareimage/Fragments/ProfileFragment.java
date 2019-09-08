@@ -50,7 +50,7 @@ public class ProfileFragment extends Fragment {
 
     FirebaseUser firebaseUser;
     Repository repository;
-    private List<String> mySaves;
+    private ArrayList<String> mySaves;
 
 
     String profileid;
@@ -104,7 +104,6 @@ public class ProfileFragment extends Fragment {
         options = view.findViewById(R.id.profile_options);
 
 
-        b=view.findViewById(R.id.bottom_navigation);
 
         recyclerView = view.findViewById(R.id.profile_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -134,54 +133,53 @@ public class ProfileFragment extends Fragment {
         repository.instance.getUser(profileid, new Repository.GetUserListener() {
             @Override
             public void onComplete(UserModel userModel) {
-                if(userModel!=null){
+                if(userModel!=null) {
                     Glide.with(getContext()).load(userModel.getImageUrl()).into(image_profile);
                     username.setText(userModel.getUserName());
                     fullname.setText(userModel.getFullName());
                     bio.setText(userModel.getBio());
-                    followers.setText(""+userModel.follows.size());
-                    following.setText(""+userModel.followers.size());
-                    mySaves=userModel.saves;
-                }
-            }
-        });
+                    followers.setText("" + userModel.follows.size());
+                    following.setText("" + userModel.followers.size());
+                    mySaves = userModel.saves;
+                    repository.instance.getAllPost(new Repository.GetAllPostsListener() {
+                        @Override
+                        public void onComplete(ArrayList<PostModel> data) {
+                            if (data != null) {
+                                int i = 0;
+                                postList.clear();
+                                postList_saves.clear();
+                                for (PostModel p : data) {
+                                    if (p.getPublisher().equals(profileid)) {
+                                        postList.add(p);
+                                        i++;
+                                    }
+                                    for (String id : mySaves) {//get from the keys the posts
+                                        if (p.getPostId().equals(id)) {
 
-        repository.instance.getAllPost(new Repository.GetAllPostsListener() {
-            @Override
-            public void onComplete(ArrayList<PostModel> data) {
-                if(data!=null) {
-                    int i=0;
-                    postList.clear();
-                    postList_saves.clear();
-                    for (PostModel p : data) {
-                        Log.d(TAG, "onComplete: "+data.toString());
-                        if (p.getPublisher().equals(profileid)) {
-                            postList.add(p);
-                            i++;
-                        }
-                        for (String id : mySaves) {//get from the keys the posts
-                            if (p.getPostId().equals(id)) {
-                                postList_saves.add(p);
+                                            postList_saves.add(p);
+                                        }
+                                    }
+                                }
+                                posts.setText("" + i);
+                                Collections.reverse(postList);
+                                myPhotosAdapter = new MyPhotosAdapter(getContext(), postList);
+                                recyclerView.setAdapter(myPhotosAdapter);
+                                myPhotosAdapter_saves = new MyPhotosAdapter(getContext(), postList_saves);
+                                recyclerView_saves.setAdapter(myPhotosAdapter_saves);
                             }
-                        }
-                    }
-                    Log.d(TAG, "onComplete: !!!!!"+postList.toString());
-                    Log.d(TAG, "onComplete: +++"+postList_saves.toString());
-                    posts.setText(""+i);
-                    Collections.reverse(postList);
-                    myPhotosAdapter = new MyPhotosAdapter(getContext(), postList);
-                    recyclerView.setAdapter(myPhotosAdapter);
-                    myPhotosAdapter_saves = new MyPhotosAdapter(getContext(), postList_saves);
-                    recyclerView_saves.setAdapter(myPhotosAdapter_saves);
-                }
 
+                        }
+                    });
+                }
             }
         });
+
+
 
 
         if (profileid.equals(firebaseUser.getUid())){//if the current user want to edit profile
             edit_profile.setText("Edit Profile");
-            options.setVisibility(View.INVISIBLE);
+            options.setVisibility(View.VISIBLE);
         } else {//only the current can edit
             edit_profile.setText("follow");
             options.setVisibility(View.GONE);
