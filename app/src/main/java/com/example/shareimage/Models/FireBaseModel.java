@@ -3,7 +3,10 @@ package com.example.shareimage.Models;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -38,6 +41,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -271,7 +279,7 @@ public class FireBaseModel {
         });
     }
 
-    private void addPicureToGallery(File imageFile){
+    private void addPictureToGallery(File imageFile){
         //add the picture to the gallery so we dont need to manage the cache size
         Intent mediaScanIntent = new
                 Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -741,6 +749,27 @@ public class FireBaseModel {
                 }
             }
         });
+    }
+
+    public void saveImageToFile(Bitmap imageBitmap, String imageFileName, final Repository.UploadFileListener listener){
+        try {
+            File dir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            File imageFile = new File(dir,imageFileName);
+            imageFile.createNewFile();
+            OutputStream out = new FileOutputStream(imageFile);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.close();
+            addPictureToGallery(imageFile);
+            listener.onComplete(true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

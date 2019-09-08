@@ -220,6 +220,12 @@ public class Repository {//singleton model to manage all the information (sqlite
     public void updateProfile(final String fullName,final String userName,final String bio,EditProfileListener listener){
         fireBaseModel.updateProfile(fullName,userName,bio,listener);
     }
+    public interface UploadFileListener {
+        void onComplete(boolean success);
+    }
+    public void saveImageToFile(Bitmap imageBitmap, String imageFileName,UploadFileListener listener ){
+        fireBaseModel.saveImageToFile(imageBitmap,imageFileName,listener);
+    }
 
     public void uploadImage(Uri mImageUri,UserModel userModel){
         fireBaseModel.uploadImage(mImageUri,userModel);
