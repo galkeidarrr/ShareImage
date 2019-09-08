@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,6 +28,7 @@ import com.example.shareimage.Models.PostModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
@@ -59,6 +62,7 @@ public class ProfileFragment extends Fragment {
     private RecyclerView recyclerView_saves;
     private MyPhotosAdapter myPhotosAdapter_saves;
     private ArrayList<PostModel> postList_saves;
+    BottomNavigationView b;
 
     ImageButton my_photos, saved_photos;
 
@@ -89,6 +93,8 @@ public class ProfileFragment extends Fragment {
         options = view.findViewById(R.id.profile_options);
 
 
+        b=view.findViewById(R.id.bottom_navigation);
+
         recyclerView = view.findViewById(R.id.profile_recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new GridLayoutManager(getContext(), 3);
@@ -111,6 +117,9 @@ public class ProfileFragment extends Fragment {
         firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
 
         mySaves=new ArrayList<>();
+
+
+
         repository.instance.getUser(profileid, new Repository.GetUserListener() {
             @Override
             public void onComplete(UserModel userModel) {
@@ -119,20 +128,22 @@ public class ProfileFragment extends Fragment {
                     username.setText(userModel.getUserName());
                     fullname.setText(userModel.getFullName());
                     bio.setText(userModel.getBio());
-                    followers.setText(userModel.follows.size());
-                    following.setText(userModel.followers.size());
+                    followers.setText(""+userModel.follows.size());
+                    following.setText(""+userModel.followers.size());
                     mySaves=userModel.saves;
                 }
             }
         });
+
         repository.instance.getAllPost(new Repository.GetAllPostsListener() {
             @Override
             public void onComplete(ArrayList<PostModel> data) {
-                int i=0;
-                postList.clear();
-                postList_saves.clear();
                 if(data!=null) {
+                    int i=0;
+                    postList.clear();
+                    postList_saves.clear();
                     for (PostModel p : data) {
+                        Log.d(TAG, "onComplete: "+data.toString());
                         if (p.getPublisher().equals(profileid)) {
                             postList.add(p);
                             i++;
@@ -143,19 +154,26 @@ public class ProfileFragment extends Fragment {
                             }
                         }
                     }
+                    Log.d(TAG, "onComplete: !!!!!"+postList.toString());
+                    Log.d(TAG, "onComplete: +++"+postList_saves.toString());
+                    posts.setText(""+i);
+                    Collections.reverse(postList);
+                    myPhotosAdapter = new MyPhotosAdapter(getContext(), postList);
+                    recyclerView.setAdapter(myPhotosAdapter);
+                    myPhotosAdapter_saves = new MyPhotosAdapter(getContext(), postList_saves);
+                    recyclerView_saves.setAdapter(myPhotosAdapter_saves);
                 }
-                posts.setText(""+i);
-                Collections.reverse(postList);
-                myPhotosAdapter.notifyDataSetChanged();
-                myPhotosAdapter_saves.notifyDataSetChanged();
+
             }
         });
 
 
         if (profileid.equals(firebaseUser.getUid())){//if the current user want to edit profile
             edit_profile.setText("Edit Profile");
+            options.setVisibility(View.INVISIBLE);
         } else {//only the current can edit
             edit_profile.setText("follow");
+            options.setVisibility(View.GONE);
             repository.instance.isFollowing(profileid, edit_profile, new Repository.GetisFollowListener() {
                 @Override
                 public void onComplete(boolean success) {

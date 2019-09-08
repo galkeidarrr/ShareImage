@@ -2,6 +2,7 @@ package com.example.shareimage.Fragments;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -20,11 +21,13 @@ import android.widget.Toast;
 import com.example.shareimage.Models.PostModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.R;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -36,7 +39,7 @@ public class ShareFragment extends Fragment {
     String miUrlOk = "";
     private StorageTask uploadTask;
     StorageReference storageRef;
-
+    FirebaseUser firebaseUser;
     ImageView close, image_added;
     TextView post;
     EditText description;
@@ -52,6 +55,10 @@ public class ShareFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_share, container, false);
+        firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+        editor.putString("profileid", firebaseUser.getUid());
+        editor.apply();
         //save the variables
         close = view.findViewById(R.id.share_closeBtn);
         image_added = view.findViewById(R.id.share_image_added);

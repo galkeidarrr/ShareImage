@@ -1,6 +1,7 @@
 package com.example.shareimage.Fragments;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,7 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.shareimage.Models.Repository;
 import com.example.shareimage.R;
+import com.google.firebase.auth.FirebaseUser;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -17,7 +22,8 @@ import com.example.shareimage.R;
  */
 public class NotificationFragment extends Fragment {
 
-
+    FirebaseUser firebaseUser;
+    Repository repository;
     public NotificationFragment() {
         // Required empty public constructor
     }
@@ -27,7 +33,13 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false);
+        View view=inflater.inflate(R.layout.fragment_notification, container, false);
+
+        firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+        editor.putString("profileid", firebaseUser.getUid());
+        editor.apply();
+        return view;
     }
 
 }

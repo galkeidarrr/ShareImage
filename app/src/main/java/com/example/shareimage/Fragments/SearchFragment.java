@@ -1,6 +1,7 @@
 package com.example.shareimage.Fragments;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,9 +21,12 @@ import com.example.shareimage.Adapters.UserAdapter;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +37,7 @@ public class SearchFragment extends Fragment {
     private UserAdapter userAdapter;
     private ArrayList<UserModel> userList;
     Repository repository;
+    FirebaseUser firebaseUser;
 
     EditText search_bar;
 
@@ -47,6 +52,10 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_search, container, false);
 
+        firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+        editor.putString("profileid", firebaseUser.getUid());
+        editor.apply();
         recyclerView=v.findViewById(R.id.search_recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

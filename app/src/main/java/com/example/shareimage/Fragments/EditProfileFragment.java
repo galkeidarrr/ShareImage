@@ -103,7 +103,7 @@ public class EditProfileFragment extends Fragment {
                             public void onComplete(boolean success) {
                                 if (success){
                                     //after saving go to home fragment
-                                    Navigation.findNavController(view).navigate(R.id.action_global_homeFragment);
+                                    Navigation.findNavController(view).navigate(R.id.action_global_profileFragment);
                                 }
                             }
                         });
@@ -145,10 +145,11 @@ public class EditProfileFragment extends Fragment {
                 @Override
                 public void onComplete(UserModel userModel) {
                     us=userModel;
+                    repository.instance.uploadImage(mImageUri,us);
+                    image_profile.setImageURI(mImageUri);
                 }
             });
-            repository.instance.uploadImage(mImageUri,us);
-            image_profile.setImageURI(mImageUri);
+
         } else {
             Toast.makeText(getActivity(), "Something gone wrong!", Toast.LENGTH_SHORT).show();
 

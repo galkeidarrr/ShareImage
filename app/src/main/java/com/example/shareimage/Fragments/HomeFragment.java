@@ -1,6 +1,7 @@
 package com.example.shareimage.Fragments;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -18,9 +19,12 @@ import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -31,6 +35,8 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
     private List<PostModel> postList;
+
+    FirebaseUser firebaseUser;
 
     private RecyclerView recyclerView_story;
     //private StoryAdapter storyAdapter;
@@ -51,6 +57,13 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_home, container, false);
+
+        firebaseUser=repository.instance.getAuthInstance().getCurrentUser();
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+        editor.putString("profileid", firebaseUser.getUid());
+        editor.apply();
+
+
         recyclerView = v.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
