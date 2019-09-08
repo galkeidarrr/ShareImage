@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.R;
@@ -22,6 +24,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class NotificationFragment extends Fragment {
 
+    ImageView closeBtn;
     FirebaseUser firebaseUser;
     Repository repository;
     public NotificationFragment() {
@@ -39,6 +42,18 @@ public class NotificationFragment extends Fragment {
         SharedPreferences.Editor editor = getContext().getSharedPreferences("PREFS", MODE_PRIVATE).edit();
         editor.putString("profileid", firebaseUser.getUid());
         editor.apply();
+
+        closeBtn=view.findViewById(R.id.notification_close);
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v)
+                        .popBackStack();
+            }
+        });
+
+
         return view;
     }
 
