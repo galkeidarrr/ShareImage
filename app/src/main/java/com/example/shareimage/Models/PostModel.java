@@ -10,7 +10,7 @@ public class PostModel {
     private String publisher;
 
 
-    public List<String> likes;
+    public ArrayList<String> likes;
 
 
     public PostModel(String postId, String postImage, String description, String publisher) {
@@ -57,11 +57,11 @@ public class PostModel {
     public void setPublisher(String publisher) {
         this.publisher = publisher;
     }
-    public List<String> getLikes() {
+    public ArrayList<String> getLikes() {
         return likes;
     }
 
-    public void setLikes(List<String> likes) {
+    public void setLikes(ArrayList<String> likes) {
         this.likes = likes;
     }
 

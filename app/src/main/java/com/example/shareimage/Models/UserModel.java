@@ -12,8 +12,8 @@ public class UserModel {
     private String imageUrl;
     private String bio;
 
-    public List<String> follows;
-    public List<String> followers;
+    public ArrayList<String> follows;
+    public ArrayList<String> followers;
     public ArrayList<String> saves;
 
 
@@ -94,7 +94,7 @@ public class UserModel {
         return follows;
     }
 
-    public void setFollows(List<String> follows) {
+    public void setFollows(ArrayList<String> follows) {
         this.follows = follows;
     }
 
@@ -102,7 +102,7 @@ public class UserModel {
         return followers;
     }
 
-    public void setFollowers(List<String> followers) {
+    public void setFollowers(ArrayList<String> followers) {
         this.followers = followers;
     }
 
