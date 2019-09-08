@@ -1,10 +1,15 @@
 package com.example.shareimage.Fragments;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.shareimage.Adapters.PostAdapter;
+import com.example.shareimage.HomeViewModel;
 import com.example.shareimage.Models.PostModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
@@ -32,15 +38,16 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class HomeFragment extends Fragment {
 
+    HomeViewModel viewData;
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
-    private List<PostModel> postList;
+    //private ArrayList<PostModel> postList;
+    LiveData<ArrayList<PostModel>> postListLD;
 
     FirebaseUser firebaseUser;
 
-    private RecyclerView recyclerView_story;
-    //private StoryAdapter storyAdapter;
-    //private List<Story> storyList;
+
+
 
     Repository repository;
 
@@ -51,6 +58,30 @@ public class HomeFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        viewData= ViewModelProviders.of(this).get(HomeViewModel.class);
+        postListLD=viewData.getPostList();
+        postListLD.observe(this, new Observer<ArrayList<PostModel>>() {
+            @Override
+            public void onChanged(ArrayList<PostModel> postModels) {
+                updateDisplay();
+            }
+        });
+    }
+
+    void updateDisplay(){
+        ArrayList<PostModel> postList = postListLD.getValue();
+        if(postList!=null && postList.size()>0 && recyclerView!=null) {
+            postAdapter = new PostAdapter(getContext(), postList);
+            recyclerView.setAdapter(postAdapter);
+            progress_circular.setVisibility(View.GONE);
+        }else {
+            progress_circular.setVisibility(View.VISIBLE);
+        }
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,60 +100,14 @@ public class HomeFragment extends Fragment {
         mLayoutManager.setReverseLayout(true);
         mLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mLayoutManager);
-        postList = new ArrayList<>();
-        postAdapter = new PostAdapter(getContext(), postList);
-        recyclerView.setAdapter(postAdapter);
 
-        //recyclerView_story = view.findViewById(R.id.recycler_view_story);
-        //recyclerView_story.setHasFixedSize(true);
-        //LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
-                //LinearLayoutManager.HORIZONTAL, false);
-       // recyclerView_story.setLayoutManager(linearLayoutManager);
-        //storyList = new ArrayList<>();
-        //storyAdapter = new StoryAdapter(getContext(), storyList);
-        //recyclerView_story.setAdapter(storyAdapter);
 
         progress_circular = v.findViewById(R.id.progress_circular);
 
-        checkFollowing();
-
+        updateDisplay();
         return v;
     }
-    private void checkFollowing(){
 
-        //TODO: do its better
-        //read post of followers posts
-        repository.instance.getUser(repository.instance.getAuthInstance().getCurrentUser().getUid().toString(), new Repository.GetUserListener() {
-            @Override
-            public void onComplete(UserModel userModel) {
-                if(userModel!=null){
-                    repository.instance.getAllPost(new Repository.GetAllPostsListener() {
-                        @Override
-                        public void onComplete(ArrayList<PostModel> data) {
-                            if(data!=null){
-                                for (PostModel p:data) {
-                                    for (String id : userModel.getFollowers()) {
-                                        if (p.getPublisher().equals(id)) {
-                                            postList.add(p);
-                                        }
-                                    }
-                                }
-                                postAdapter.setmPosts(postList);
-                                recyclerView.setAdapter(postAdapter);
-
-                            }
-                            if (postList.isEmpty()){
-                                progress_circular.setVisibility(View.VISIBLE);
-                            }else {
-                                progress_circular.setVisibility(View.GONE);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-    }
 
 
 }
