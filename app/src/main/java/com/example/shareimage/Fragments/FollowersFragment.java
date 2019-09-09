@@ -96,7 +96,7 @@ public class FollowersFragment extends Fragment {
                 });
                 break;
             case "following":
-                repository.instance.getUser(id, new Repository.GetUserListener() {
+                Repository.instance.getUser(id, new Repository.GetUserListener() {
                     @Override
                     public void onComplete(UserModel userModel) {
                         if (userModel != null) {

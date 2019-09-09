@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.shareimage.ViewModels.MyApplication;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -118,8 +120,6 @@ public class Repository {//singleton model to manage all the information (sqlite
     public void searchUsers(String s,GetSearchUsersListener listener){
         fireBaseModel.searchUsers(s,listener);
     }
-    //TODO: get all users and add user
-    //public void addUser(UserModel user) {FireBaseModel.addUser(user); }
 
     public interface AddPostListener {
         void onComplete(boolean success);
@@ -230,6 +230,7 @@ public class Repository {//singleton model to manage all the information (sqlite
     public void uploadImage(Uri mImageUri,UserModel userModel){
         fireBaseModel.uploadImage(mImageUri,userModel);
     }
+
 
 
 

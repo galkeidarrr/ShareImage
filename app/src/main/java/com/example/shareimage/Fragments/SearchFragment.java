@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.shareimage.Adapters.UserAdapter;
+import com.example.shareimage.Models.FireBaseModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
@@ -60,7 +61,7 @@ public class SearchFragment extends Fragment {
         recyclerView.setAdapter(userAdapter);
 
         search_bar = v.findViewById(R.id.search_barET);
-        repository.instance.getAllUsers(new Repository.GetAllUsersListener() {
+        Repository.instance.getAllUsers(new Repository.GetAllUsersListener() {
             @Override
             public void onComplete(ArrayList<UserModel> data) {
                 if(data!=null){
