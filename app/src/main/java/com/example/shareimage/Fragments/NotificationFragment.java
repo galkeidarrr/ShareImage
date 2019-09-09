@@ -71,7 +71,7 @@ public class NotificationFragment extends Fragment {
 
     void updateDisplay(ArrayList<NotificationModel> n){
         if(n!=null && n.size()>0 && recyclerView!=null) {
-            Collections.reverse(n);
+            //Collections.reverse(n);
             notificationAdapter = new NotificationAdapter(getContext(), n);
             recyclerView.setAdapter(notificationAdapter);
         }

@@ -26,6 +26,7 @@ import com.example.shareimage.R;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -66,6 +67,7 @@ public class HomeFragment extends Fragment {
     void updateDisplay(ArrayList<PostModel> p){
 
         if(p!=null && p.size()>0 && recyclerView!=null) {
+            //Collections.reverse(p);
             postAdapter = new PostAdapter(getContext(), p);
             recyclerView.setAdapter(postAdapter);
             progress_circular.setVisibility(View.GONE);
