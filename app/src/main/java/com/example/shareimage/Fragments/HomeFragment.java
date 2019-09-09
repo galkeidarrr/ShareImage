@@ -19,16 +19,13 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.example.shareimage.Adapters.PostAdapter;
-import com.example.shareimage.HomeViewModel;
+import com.example.shareimage.ViewModels.HomeViewModel;
 import com.example.shareimage.Models.PostModel;
 import com.example.shareimage.Models.Repository;
-import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -46,12 +43,7 @@ public class HomeFragment extends Fragment {
 
     FirebaseUser firebaseUser;
 
-
-
-
     Repository repository;
-
-
     ProgressBar progress_circular;
 
     public HomeFragment() {
@@ -66,15 +58,15 @@ public class HomeFragment extends Fragment {
         postListLD.observe(this, new Observer<ArrayList<PostModel>>() {
             @Override
             public void onChanged(ArrayList<PostModel> postModels) {
-                updateDisplay();
+                updateDisplay(postModels);
             }
         });
     }
 
-    void updateDisplay(){
-        ArrayList<PostModel> postList = postListLD.getValue();
-        if(postList!=null && postList.size()>0 && recyclerView!=null) {
-            postAdapter = new PostAdapter(getContext(), postList);
+    void updateDisplay(ArrayList<PostModel> p){
+
+        if(p!=null && p.size()>0 && recyclerView!=null) {
+            postAdapter = new PostAdapter(getContext(), p);
             recyclerView.setAdapter(postAdapter);
             progress_circular.setVisibility(View.GONE);
         }else {
@@ -104,7 +96,7 @@ public class HomeFragment extends Fragment {
 
         progress_circular = v.findViewById(R.id.progress_circular);
 
-        updateDisplay();
+        updateDisplay(postListLD.getValue());
         return v;
     }
 

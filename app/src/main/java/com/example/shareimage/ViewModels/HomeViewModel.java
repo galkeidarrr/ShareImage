@@ -1,4 +1,4 @@
-package com.example.shareimage;
+package com.example.shareimage.ViewModels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class HomeViewModel extends ViewModel {
 
-    MutableLiveData<ArrayList<PostModel>> postListLD = new MutableLiveData<>();
+    MutableLiveData<ArrayList<PostModel>> postListLD = new MutableLiveData<ArrayList<PostModel>>();
 
 
     public HomeViewModel() {

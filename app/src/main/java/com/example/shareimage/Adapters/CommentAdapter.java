@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.shareimage.Models.CommentModel;
+import com.example.shareimage.Models.PostModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
@@ -93,7 +94,7 @@ public class CommentAdapter  extends RecyclerView.Adapter<CommentAdapter.ImageVi
                     alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
-                                    repository.instance.deleteComment(comment.getCommentId(), new Repository.DeleteCommentListener() {
+                                    repository.instance.deleteComment(comment.getCommentId(),postid, new Repository.DeleteCommentListener() {
                                         @Override
                                         public void onComplete(boolean success) {
                                             if(success) {

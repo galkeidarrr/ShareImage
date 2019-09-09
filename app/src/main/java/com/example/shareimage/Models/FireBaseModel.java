@@ -483,7 +483,22 @@ public class FireBaseModel {
 
 
     public void getAllPost(final Repository.GetAllPostsListener listener){
-
+        db.collection("posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                ArrayList<PostModel> data = new ArrayList<>();
+                if (e != null) {
+                    listener.onComplete(data);
+                    return;
+                }
+                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                    PostModel post= doc.toObject(PostModel.class);
+                    data.add(post);
+                }
+                listener.onComplete(data);
+            }
+        });
+        /*
         db.collection("posts").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -501,7 +516,7 @@ public class FireBaseModel {
                 listener.onComplete(null);
             }
         });
-
+*/
 
     }
 
@@ -642,7 +657,7 @@ public class FireBaseModel {
 
     }
 
-    public void addComment(final String comment,final String publisherid, final Repository.AddCommentListener listener){
+    public void addComment(final String comment,final String publisherid,final String postId, final Repository.AddCommentListener listener){
 
         CommentModel c=new CommentModel(comment,publisherid,"");
         db.collection("comments").add(c).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -652,18 +667,46 @@ public class FireBaseModel {
                 db.collection("comments").document(documentReference.getId()).set(c).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        listener.onComplete(documentReference.getId());
+                        Repository.instance.getPost(postId, new Repository.GetPostListener() {
+                            @Override
+                            public void onComplete(PostModel postModel) {
+                                if (postModel != null) {
+                                    Log.d(TAG, "onComplete: !!" + documentReference.getId());
+                                    postModel.comments.add(documentReference.getId());
+                                    db.collection("posts").document(postId).set(postModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            listener.onComplete(documentReference.getId());
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     }
                 });
             }
         });
     }
 
-    public void deleteComment(final String commentId, final Repository.DeleteCommentListener listener){
+    public void deleteComment(final String commentId,final String postId, final Repository.DeleteCommentListener listener){
         db.collection("comments").document(commentId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                listener.onComplete(task.isSuccessful());
+                Repository.instance.getPost(postId, new Repository.GetPostListener() {
+                    @Override
+                    public void onComplete(PostModel postModel) {
+                        if (postModel != null) {
+                            postModel.comments.remove(commentId);
+                            db.collection("posts").document(postId).set(postModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    listener.onComplete(task.isSuccessful());
+                                }
+                            });
+                        }
+                    }
+                });
+
             }
         });
     }
@@ -692,19 +735,21 @@ public class FireBaseModel {
     }
 
     public void getAllComments(final Repository.GetAllCommentsListener listener){
-        db.collection("comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("comments").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                ArrayList<CommentModel> data = new ArrayList<>();
-                if (e != null) {
-                    listener.onComplete(data);
-                    return;
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    ArrayList<CommentModel> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        CommentModel comment= document.toObject(CommentModel.class);
+                        list.add(comment);
+                    }
+                    listener.onComplete(list);
+                    Log.d(TAG, list.toString());
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
                 }
-                for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                    CommentModel commentModel= doc.toObject(CommentModel.class);
-                    data.add(commentModel);
-                }
-                listener.onComplete(data);
+                listener.onComplete(null);
             }
         });
 

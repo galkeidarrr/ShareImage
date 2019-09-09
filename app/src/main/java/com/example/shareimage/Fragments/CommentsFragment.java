@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.shareimage.Adapters.CommentAdapter;
 import com.example.shareimage.Models.CommentModel;
+import com.example.shareimage.Models.PostModel;
 import com.example.shareimage.Models.Repository;
 import com.example.shareimage.Models.UserModel;
 import com.example.shareimage.R;
@@ -104,7 +105,7 @@ public class CommentsFragment extends Fragment {
                     Log.d(TAG, "onClick: the user try post empty message");
                     Toast.makeText(getActivity(), "You can't send empty message", Toast.LENGTH_SHORT).show();
                 }else {
-                    repository.instance.addComment(commentLefted, firebaseUser.getUid(), new Repository.AddCommentListener() {
+                    repository.instance.addComment(commentLefted, firebaseUser.getUid(),postid, new Repository.AddCommentListener() {
 
                         @Override
                         public void onComplete(String commentid) {
@@ -115,9 +116,10 @@ public class CommentsFragment extends Fragment {
                                 repository.instance.addCommentNotification(commentId, publisherid, commentLefted, postid, new Repository.GetNotifiListener() {
                                     @Override
                                     public void onComplete(boolean success) {
-                                        if (!success) {
-                                            Log.d(TAG, "onComplete: failed to notify about comment");
+                                        if (success) {
+                                            Navigation.findNavController(view).popBackStack();
                                         }
+
                                     }
                                 });
                             }
@@ -145,9 +147,21 @@ public class CommentsFragment extends Fragment {
             public void onComplete(ArrayList<CommentModel> data) {
                 if(data!=null){
                     Log.d(TAG, "onComplete: get all comments");
-                    commentList=data;
-                    commentAdapter.setmComment(commentList);
-                    recyclerView.setAdapter(commentAdapter);
+                    Repository.instance.getPost(postid, new Repository.GetPostListener() {
+                        @Override
+                        public void onComplete(PostModel postModel) {
+                            if(postModel!=null){
+                                for (CommentModel com:data){
+                                    if(postModel.comments.contains(com.getCommentId())){
+                                        commentList.add(com);
+                                    }
+                                }
+                                commentAdapter.setmComment(commentList);
+                                recyclerView.setAdapter(commentAdapter);
+                            }
+                        }
+                    });
+
                 }
             }
         });

@@ -11,6 +11,8 @@ public class PostModel {
 
 
     public ArrayList<String> likes;
+    public  ArrayList<String> comments;
+
 
 
     public PostModel(String postId, String postImage, String description, String publisher) {
@@ -20,12 +22,16 @@ public class PostModel {
         this.publisher = publisher;
 
         likes=new ArrayList<>();
+        comments=new ArrayList<>();
 
     }
 
     public PostModel() {
     }
 
+    public void setComments(ArrayList<String> comments) {
+        this.comments = comments;
+    }
     public String getPostId() {
         return postId;
     }
